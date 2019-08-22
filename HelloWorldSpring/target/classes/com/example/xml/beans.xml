@@ -8,4 +8,8 @@
 	<constructor-arg value="Ericka Montero!"></constructor-arg>
 	<constructor-arg value="27"></constructor-arg>
 	</bean>
+	<bean id="employee" class="com.example.spring.HelloWorldSpring.dto.Employee">
+	<property name="salary" value="1236456"></property>
+	<property name="name" value="Ericka Montero"></property>
+	</bean>
 </beans>
