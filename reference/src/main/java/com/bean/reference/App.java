@@ -7,10 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.bean.reference.dto.Room;
 import com.bean.reference.dto.Window;
 
-/**
- * Hello world!
- *
- */
+
 public class App {
 	public static void main(String[] args) {
 		ApplicationContext appContext = new ClassPathXmlApplicationContext("com/reference/xml/bean.xml");
