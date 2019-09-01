@@ -7,10 +7,27 @@
 		ref="door"></constructor-arg> </bean> -->
 	<bean id="roomFirst" class="com.bean.reference.dto.Room">
 		<property name="door" ref="door"></property>
+		<property name="windows">
+			<list>
+				<ref bean="window" />
+				<ref bean="windowFront" />
+			</list>
+		</property>
 	</bean>
 
 	<bean id="door" class="com.bean.reference.dto.Door">
 		<property name="type" value="Madera"></property>
 		<property name="mark" value="Stickl"></property>
+	</bean>
+
+	<bean id="windowFront" class="com.bean.reference.dto.Window">
+		<property name="type" value="Glass"></property>
+		<property name="mark" value="Glass Company"></property>
+		<property name="size" value="240"></property>
+	</bean>
+	<bean id="window" class="com.bean.reference.dto.Window">
+		<property name="type" value="Glass"></property>
+		<property name="mark" value="Glass Company"></property>
+		<property name="size" value="25"></property>
 	</bean>
 </beans> 

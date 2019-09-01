@@ -23,6 +23,10 @@ public class Window {
 	public void setSize(String size) {
 		this.size = size;
 	}
+	@Override
+	public String toString() {
+		return "Window [type=" + type + ", mark=" + mark + ", size=" + size + "]";
+	}
 	
 	
 }
