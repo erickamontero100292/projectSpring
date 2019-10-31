@@ -13,3 +13,5 @@ Servers/Pivotal tc Server Developer Edition v4.0-config/catalina.policy
 Servers/.settings/org.eclipse.wst.server.core.prefs
 wsdlFirst/
 wsdlFirst.txt
+ProjectRest/mvnw.cmd
+ProjectRest/.mvn/wrapper/maven-wrapper.properties
