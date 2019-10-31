@@ -18,10 +18,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 public class JsonConfiguration extends WebMvcConfigurerAdapter {
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		converters.add(new MappingJackson2HttpMessageConverter(
+		/*converters.add(new MappingJackson2HttpMessageConverter(
 				new Jackson2ObjectMapperBuilder().propertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE)
 						.serializationInclusion(Include.NON_NULL).build()));
 		
-		converters.add(new MappingJackson2XmlHttpMessageConverter());
+		converters.add(new MappingJackson2XmlHttpMessageConverter());*/ //RETURN RESPONSE IN XML IF WE WANT TO CONVERT IN JSON ADJUST IN POSTMAN THE HEADER
 	}
 }
