@@ -25,8 +25,6 @@ public class WorkDayController {
     List<Workday> entityWorkdays;
 
     @Autowired
-    WorkdayHelper workdayHelper;
-    @Autowired
     WorkDayRepository workDayRepository;
     @Autowired
     WorkDayService workDayService;
@@ -118,8 +116,8 @@ public class WorkDayController {
     private void init() {
         EntityWorkday workday8EntityWorkdayH = new EntityWorkday(1L, "Jornada laboral 8H", 8L, 40L);
         EntityWorkday workday12EntityWorkdayH = new EntityWorkday(2L, "Jornada laboral 12H", 12L, 60L);
-        workdayHelper.save(workday8EntityWorkdayH);
-        workdayHelper.save(workday12EntityWorkdayH);
+        workDayService.save(workday8EntityWorkdayH);
+        workDayService.save(workday12EntityWorkdayH);
     }
 
 }
