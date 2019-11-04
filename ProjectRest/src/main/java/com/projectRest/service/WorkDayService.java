@@ -51,6 +51,21 @@ public class WorkDayService {
 
     }
 
+    public Workday findByName(String name) {
+        Workday workday = null;
+        try {
+            EntityWorkday entityWorkday = repository.findByName_IgnoreCase(name);
+            workday = new Workday(entityWorkday);
+        } catch (WorkdayNotFoundException  e) {
+            throw new WorkdayNotFoundException(name);
+        } catch (Exception e) {
+            throw new WorkdayNotFoundException(name);
+        }
+
+        return workday;
+
+    }
+
     public Workday delete(Long id) {
         EntityWorkday workday = repository.findById(id).orElse(null);
         repository.delete(workday);

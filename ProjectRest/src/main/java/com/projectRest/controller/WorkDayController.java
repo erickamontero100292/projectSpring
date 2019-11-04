@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -55,26 +54,24 @@ public class WorkDayController {
 
     @GetMapping("/workday/findname/{name}")
     public Workday getWorkdayByName(@PathVariable String name) {
-        Workday workday = null;
-        for (Workday model : entityWorkdays) {
-            if (model.getName().equalsIgnoreCase(name)) {
-                workday = model;
+        Workday entityWorkday = null;
+        try {
+            if (name != null) {
+                entityWorkday = workDayService.findByName(name);
+                return entityWorkday;
             }
+        } catch (WorkdayNotFoundException e) {
+            throw e;
         }
-        if (workday != null) {
-            return workday;
-        } else {
-            throw new WorkdayNotFoundException(name);
-        }
+        return entityWorkday;
     }
 
     @PostConstruct
     private void init() {
         EntityWorkday workday8EntityWorkdayH = new EntityWorkday(1L, "Jornada laboral 8H", 8L, 40L);
-        Workday workday12H = new Workday(2L, "Jornada laboral 12H", 12L, 60L);
         EntityWorkday workday12EntityWorkdayH = new EntityWorkday(2L, "Jornada laboral 12H", 12L, 60L);
-        EntityWorkday entityWorkday = workdayHelper.save(workday8EntityWorkdayH);
-        EntityWorkday save = workdayHelper.save(workday12EntityWorkdayH);
+        workdayHelper.save(workday8EntityWorkdayH);
+        workdayHelper.save(workday12EntityWorkdayH);
 
 
     }
@@ -94,7 +91,7 @@ public class WorkDayController {
             entityWorkday = workDayRepository.findByName_IgnoreCase(workday.getName());
 
             if (entityWorkday == null) {
-                return new ResponseEntity<Workday>(workdayHelper.addWorkday(workday, entityWorkdays), HttpStatus.CREATED);
+                return new ResponseEntity<>(workdayHelper.addWorkday(workday, entityWorkdays), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(new ErrorRest("La jornada con: " + workday.getName() + " ya existe"),
                         HttpStatus.CONFLICT);
