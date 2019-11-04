@@ -1,6 +1,5 @@
 package com.projectRest.service;
 
-import com.projectRest.controller.WorkDayController;
 import com.projectRest.entity.EntityWorkday;
 import com.projectRest.error.WorkdayNotFoundException;
 import com.projectRest.model.Workday;
@@ -22,8 +21,7 @@ public class WorkDayService {
 
     public Workday save(EntityWorkday workday) {
         EntityWorkday entityWorkday = repository.save(workday);
-        Workday newWorkday = new Workday(entityWorkday);
-        return newWorkday;
+        return new Workday(entityWorkday);
     }
 
     public List<Workday> findAll() {
@@ -41,9 +39,7 @@ public class WorkDayService {
         try {
             EntityWorkday entityWorkday = repository.findById(id).orElse(null);
             workday = new Workday(entityWorkday);
-        } catch (WorkdayNotFoundException  e) {
-			throw new WorkdayNotFoundException(id);
-        } catch (Exception e) {
+        }  catch (Exception e) {
 			throw new WorkdayNotFoundException(id);
         }
 
@@ -56,8 +52,6 @@ public class WorkDayService {
         try {
             EntityWorkday entityWorkday = repository.findByName_IgnoreCase(name);
             workday = new Workday(entityWorkday);
-        } catch (WorkdayNotFoundException  e) {
-            throw new WorkdayNotFoundException(name);
         } catch (Exception e) {
             throw new WorkdayNotFoundException(name);
         }
@@ -69,8 +63,7 @@ public class WorkDayService {
     public Workday delete(Long id) {
         EntityWorkday workday = repository.findById(id).orElse(null);
         repository.delete(workday);
-        Workday deleteWorkday = new Workday(workday);
-        return deleteWorkday;
+        return  new Workday(workday);
     }
 
 }
