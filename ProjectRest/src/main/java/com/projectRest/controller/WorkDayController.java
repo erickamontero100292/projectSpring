@@ -31,12 +31,6 @@ public class WorkDayController {
     @Autowired
     WorkDayService workDayService;
 
-    @GetMapping("/workdays")
-    public List<Workday> getWorkday() {
-
-        return entityWorkdays;
-
-    }
 
     @GetMapping("/workday/{id}")
     public Workday getWorkdayById(@PathVariable Long id) {
@@ -66,45 +60,43 @@ public class WorkDayController {
         return entityWorkday;
     }
 
-    @PostConstruct
-    private void init() {
-        EntityWorkday workday8EntityWorkdayH = new EntityWorkday(1L, "Jornada laboral 8H", 8L, 40L);
-        EntityWorkday workday12EntityWorkdayH = new EntityWorkday(2L, "Jornada laboral 12H", 12L, 60L);
-        workdayHelper.save(workday8EntityWorkdayH);
-        workdayHelper.save(workday12EntityWorkdayH);
-
-
-    }
-
 
     @PostMapping("/addworkday")
     public ResponseEntity<?> addworkday(RequestEntity<Workday> requestEntity) {
-
-        if (requestEntity.getBody() == null) {
+        if (validateBodyRequest(requestEntity)) {
             return new ResponseEntity<>(new ErrorRest("Formato de petición incorrecto. Debe enviar los datos de la jornada"),
                     HttpStatus.BAD_REQUEST);
-        }
 
-        Workday workday = requestEntity.getBody();
-        EntityWorkday entityWorkday = null;
-        try {
-            entityWorkday = workDayRepository.findByName_IgnoreCase(workday.getName());
+        } else {
+            Workday requestEntityBody = requestEntity.getBody();
+            try {
+                Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
 
-            if (entityWorkday == null) {
-                return new ResponseEntity<>(workdayHelper.addWorkday(workday, entityWorkdays), HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(new ErrorRest("La jornada con: " + workday.getName() + " ya existe"),
+                if (workDayServiceByName == null || workDayServiceByName.getName() == null) {
+                    return new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>(new ErrorRest("La jornada con: " + workDayServiceByName.getName() + " ya existe"),
+                            HttpStatus.CONFLICT);
+                }
+            } catch (WorkdayNotFoundException e) {
+                return new ResponseEntity<>(new ErrorRest("La jornada con: " + requestEntityBody.getName() + " ya existe"),
+                        HttpStatus.CONFLICT);
+            } catch (NoSuchElementException e) {
+                return new ResponseEntity<>(new ErrorRest("Error creando la jornada"),
                         HttpStatus.CONFLICT);
             }
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(new ErrorRest("Error creando la jornada"),
-                    HttpStatus.CONFLICT);
         }
-
 
     }
 
-    @PostMapping("/addListworkday")
+    private boolean validateBodyRequest(RequestEntity<Workday> requestEntity) {
+        if (requestEntity.getBody() == null) {
+            return true;
+        }
+        return false;
+    }
+
+/*    @PostMapping("/addListworkday")
     public ResponseEntity<?> addworkdays(RequestEntity<List<Workday>> requestEntity) {
 
         if (requestEntity.getBody() == null) {
@@ -120,7 +112,16 @@ public class WorkDayController {
         } else {
             return new ResponseEntity<>(workdayHelper.addListWorkday(workday, entityWorkdays), HttpStatus.CREATED);
         }
+    }*/
+
+    @PostConstruct
+    private void init() {
+        EntityWorkday workday8EntityWorkdayH = new EntityWorkday(1L, "Jornada laboral 8H", 8L, 40L);
+        EntityWorkday workday12EntityWorkdayH = new EntityWorkday(2L, "Jornada laboral 12H", 12L, 60L);
+        workdayHelper.save(workday8EntityWorkdayH);
+        workdayHelper.save(workday12EntityWorkdayH);
     }
+
 }
 
 

@@ -1,5 +1,6 @@
 package com.projectRest.entity;
 
+import com.projectRest.model.Workday;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -77,6 +78,11 @@ public class EntityWorkday {
         this.numberWeekHour = numberWeekHour;
     }
 
+    public EntityWorkday(Workday workday) {
+        this.name = workday.getName();
+        this.numberDailyHour = workday.getNumberDailyHour();
+        this.numberWeekHour = workday.getNumberWeekHour();
+    }
     public EntityWorkday() {
 		super();
 	}
