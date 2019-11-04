@@ -26,7 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/","/api/addworkday/", "/h2-console/**").permitAll()
+                .antMatchers("/","/api/**", "/h2-console/**").permitAll()
                 .anyRequest().authenticated();
 
 

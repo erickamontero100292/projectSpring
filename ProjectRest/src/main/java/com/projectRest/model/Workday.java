@@ -1,6 +1,8 @@
 package com.projectRest.model;
 
 
+import com.projectRest.entity.EntityWorkday;
+
 public class Workday {
     private Long id;
 
@@ -62,6 +64,13 @@ public class Workday {
         this.name = name;
         this.numberDailyHour = numberDailyHour;
         this.numberWeekHour = numberWeekHour;
+    }
+
+    public Workday(EntityWorkday entityWorkday) {
+        this.id = entityWorkday.getId();
+        this.name = entityWorkday.getName();
+        this.numberDailyHour = entityWorkday.getNumberDailyHour();
+        this.numberWeekHour = entityWorkday.getNumberWeekHour();
     }
 
     public Workday() {
