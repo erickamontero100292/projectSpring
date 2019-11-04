@@ -29,3 +29,6 @@ build/
 
 ### VS Code ###
 .vscode/
+/db/basededatos.mv.db
+/db/workday.mv.db
+/db/workday.trace.db
