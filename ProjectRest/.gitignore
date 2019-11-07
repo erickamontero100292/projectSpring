@@ -32,3 +32,4 @@ build/
 /db/basededatos.mv.db
 /db/workday.mv.db
 /db/workday.trace.db
+/path/functionality_for_add_the_service.patch

@@ -35,6 +35,19 @@ public class WorkDayService {
         return new Workday(entityWorkday);
     }
 
+    public List<EntityWorkday> saveList(List<Workday> workdayList) {
+        List<EntityWorkday> entityWorkdays = new ArrayList<>();
+        try {
+            for (Workday workday : workdayList) {
+                entityWorkdays.add(new EntityWorkday(workday));
+            }
+            repository.saveAll(entityWorkdays);
+        } catch (Exception e) {
+            throw new WorkdayNotFoundException("workday");
+        }
+        return entityWorkdays;
+    }
+
     public List<Workday> findAll() {
         List<EntityWorkday> entityWorkdays = repository.findAll();
         List<Workday> workdays = new ArrayList<>();
@@ -63,9 +76,9 @@ public class WorkDayService {
         try {
             EntityWorkday entityWorkday = repository.findByName_IgnoreCase(name);
             workday = new Workday(entityWorkday);
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             workday = new Workday();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new WorkdayNotFoundException(name);
         }
 

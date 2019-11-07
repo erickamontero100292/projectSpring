@@ -70,7 +70,7 @@ public class WorkDayController {
             try {
                 Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
 
-                if (workDayServiceByName == null || workDayServiceByName.getName() == null) {
+                if (isWorkdayNull(workDayServiceByName)) {
                     return new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>(new ErrorRest("La jornada con: " + workDayServiceByName.getName() + " ya existe"),
@@ -87,6 +87,10 @@ public class WorkDayController {
 
     }
 
+    private boolean isWorkdayNull(Workday workDayServiceByName) {
+        return workDayServiceByName == null || workDayServiceByName.getName() == null;
+    }
+
     private boolean validateBodyRequest(RequestEntity<Workday> requestEntity) {
         if (requestEntity.getBody() == null) {
             return true;
@@ -94,7 +98,7 @@ public class WorkDayController {
         return false;
     }
 
-/*    @PostMapping("/addListworkday")
+    @PostMapping("/addListworkday")
     public ResponseEntity<?> addworkdays(RequestEntity<List<Workday>> requestEntity) {
 
         if (requestEntity.getBody() == null) {
@@ -108,9 +112,9 @@ public class WorkDayController {
             return new ResponseEntity<>(new ErrorRest("La jornada con ID " + " ya existe"),
                     HttpStatus.CONFLICT);
         } else {
-            return new ResponseEntity<>(workdayHelper.addListWorkday(workday, entityWorkdays), HttpStatus.CREATED);
+            return new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
         }
-    }*/
+    }
 
     @PostConstruct
     private void init() {
