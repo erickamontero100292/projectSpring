@@ -141,10 +141,10 @@ public class WorkDayController {
                 try {
                     Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
                     if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
-                        requestEntityBody = new Workday(requestEntityBody);
+                        requestEntityBody = new Workday(workDayServiceByName);
                         return new ResponseEntity<>(workDayService.update(requestEntityBody), HttpStatus.CREATED);
                     } else {
-                        return new ResponseEntity<>(new ErrorRest("La jornada con: " + workDayServiceByName.getName() + " no se pudo actualizar"),
+                        return new ResponseEntity<>(new ErrorRest("La jornada con nombre " + requestEntityBody.getName() + " no se pudo actualizar"),
                                 HttpStatus.CONFLICT);
                     }
                 } catch (WorkdayNotFoundException e) {

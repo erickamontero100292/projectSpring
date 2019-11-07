@@ -75,8 +75,8 @@ public class Workday {
 
     public Workday(Workday workday) {
         this.name = (workday.getName().equalsIgnoreCase(this.name)) ? this.name : workday.getName();
-        this.numberDailyHour = workday.getNumberDailyHour().equals(this.numberDailyHour) ? this.numberDailyHour : workday.getNumberDailyHour();
-        this.numberWeekHour = workday.getNumberWeekHour().equals(this.numberWeekHour) ? this.numberWeekHour : workday.getNumberWeekHour();
+        this.numberDailyHour = workday.getNumberDailyHour().equals(this.numberDailyHour) ? workday.getNumberDailyHour(): this.numberDailyHour ;
+        this.numberWeekHour = workday.getNumberWeekHour().equals(this.numberWeekHour) ?workday.getNumberWeekHour()  :  this.numberWeekHour;
     }
 
 
