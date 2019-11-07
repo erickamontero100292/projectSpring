@@ -35,6 +35,17 @@ public class WorkDayService {
         return new Workday(entityWorkday);
     }
 
+    public Workday update(Workday workday) {
+        EntityWorkday entityWorkday = null;
+        try {
+            entityWorkday = repository.findByName_IgnoreCase(workday.getName());
+            entityWorkday = repository.save(entityWorkday);
+        } catch (Exception e) {
+            throw new WorkdayNotFoundException(workday.getName()," no se logro actualizar");
+        }
+        return new Workday(entityWorkday);
+    }
+
     public List<EntityWorkday> saveList(List<Workday> workdayList) {
         List<EntityWorkday> entityWorkdays = new ArrayList<>();
         try {

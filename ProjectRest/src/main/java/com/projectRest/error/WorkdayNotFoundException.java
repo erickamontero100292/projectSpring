@@ -17,4 +17,8 @@ public class WorkdayNotFoundException extends RuntimeException {
     public WorkdayNotFoundException(String name) {
         super(String.format("La jornada %s no existe", name));
     }
+
+    public WorkdayNotFoundException(String message,String name) {
+        super(String.format("La jornada %s %s",name, message));
+    }
 }

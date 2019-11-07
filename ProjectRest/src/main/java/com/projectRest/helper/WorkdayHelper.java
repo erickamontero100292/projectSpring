@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class WorkdayHelper {
 
-    public boolean isWorkdayNull(Workday workDayServiceByName) {
+    public boolean isWorkdayNotNull(Workday workDayServiceByName) {
         return workDayServiceByName == null || workDayServiceByName.getName() == null;
     }
 
@@ -18,6 +18,12 @@ public class WorkdayHelper {
             return true;
         }
         return false;
+    }
+    public boolean isWorkdayCorrect(Workday workday) {
+        if (workday.getName() == null || workday.getName().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
 
