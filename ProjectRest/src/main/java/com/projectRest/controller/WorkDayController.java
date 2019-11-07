@@ -29,6 +29,9 @@ public class WorkDayController {
     @Autowired
     WorkDayService workDayService;
 
+    @Autowired
+    WorkdayHelper workdayHelper;
+
 
     @GetMapping("/workday/{id}")
     public Workday getWorkdayById(@PathVariable Long id) {
@@ -61,7 +64,7 @@ public class WorkDayController {
 
     @PostMapping("/addworkday")
     public ResponseEntity<?> addworkday(RequestEntity<Workday> requestEntity) {
-        if (validateBodyRequest(requestEntity)) {
+        if (workdayHelper.validateBodyRequest(requestEntity)) {
             return new ResponseEntity<>(new ErrorRest("Formato de petición incorrecto. Debe enviar los datos de la jornada"),
                     HttpStatus.BAD_REQUEST);
 
@@ -70,7 +73,7 @@ public class WorkDayController {
             try {
                 Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
 
-                if (isWorkdayNull(workDayServiceByName)) {
+                if (workdayHelper.isWorkdayNull(workDayServiceByName)) {
                     return new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>(new ErrorRest("La jornada con: " + workDayServiceByName.getName() + " ya existe"),
@@ -87,16 +90,7 @@ public class WorkDayController {
 
     }
 
-    private boolean isWorkdayNull(Workday workDayServiceByName) {
-        return workDayServiceByName == null || workDayServiceByName.getName() == null;
-    }
 
-    private boolean validateBodyRequest(RequestEntity<Workday> requestEntity) {
-        if (requestEntity.getBody() == null) {
-            return true;
-        }
-        return false;
-    }
 
     @PostMapping("/addListworkday")
     public ResponseEntity<?> addworkdays(RequestEntity<List<Workday>> requestEntity) {
@@ -115,6 +109,24 @@ public class WorkDayController {
             return new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
         }
     }
+
+
+    @GetMapping("/listworkday")
+    public ResponseEntity<?> listWorkdays() {
+        List<Workday> workdayList=  workDayService.findAll();
+
+        if (workdayList == null) {
+            return new ResponseEntity<>(new ErrorRest("No se pudo obtener la informacion de la lista"),
+                    HttpStatus.CONFLICT);
+        } if(workdayList.isEmpty()){
+            return new ResponseEntity<>(new ErrorRest("No existen jornadas"),
+                    HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(workdayList, HttpStatus.OK);
+        }
+    }
+
+
 
     @PostConstruct
     private void init() {
