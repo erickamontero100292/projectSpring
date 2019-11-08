@@ -1,6 +1,7 @@
 package com.projectRest.controller;
 
 
+import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityWorkday;
 import com.projectRest.error.ErrorRest;
 import com.projectRest.error.WorkdayNotFoundException;
@@ -74,14 +75,14 @@ public class WorkDayController {
                 if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
                     return new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
                 } else {
-                    return new ResponseEntity<>(new ErrorRest("La jornada con: " + workDayServiceByName.getName() + " no existe"),
+                    return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + workDayServiceByName.getName() + Message.NOT_EXIST.getMesage()),
                             HttpStatus.CONFLICT);
                 }
             } catch (WorkdayNotFoundException e) {
-                return new ResponseEntity<>(new ErrorRest("La jornada con: " + requestEntityBody.getName() + " ya existe"),
+                return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
                         HttpStatus.CONFLICT);
             } catch (NoSuchElementException e) {
-                return new ResponseEntity<>(new ErrorRest("Error creando la jornada"),
+                return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
                         HttpStatus.CONFLICT);
             }
         }
@@ -93,14 +94,14 @@ public class WorkDayController {
     public ResponseEntity<?> addworkdays(RequestEntity<List<Workday>> requestEntity) {
 
         if (requestEntity.getBody() == null) {
-            return new ResponseEntity<>(new ErrorRest("Formato de petición incorrecto. Debe enviar los datos de la jornada"),
+            return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
                     HttpStatus.BAD_REQUEST);
         }
 
         List<Workday> workday = requestEntity.getBody();
 
         if (workday == null) {
-            return new ResponseEntity<>(new ErrorRest("La jornada con ID " + " ya existe"),
+            return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
                     HttpStatus.CONFLICT);
         } else {
             return new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
@@ -113,11 +114,11 @@ public class WorkDayController {
         List<Workday> workdayList = workDayService.findAll();
 
         if (workdayList == null) {
-            return new ResponseEntity<>(new ErrorRest("No se pudo obtener la informacion de la lista"),
+            return new ResponseEntity<>(new ErrorRest(Message.NOT_GET_INFORMATION_LIST.getMesage()),
                     HttpStatus.CONFLICT);
         }
         if (workdayList.isEmpty()) {
-            return new ResponseEntity<>(new ErrorRest("No existen jornadas"),
+            return new ResponseEntity<>(new ErrorRest(Message.NO_EXIST_WORKDAY.getMesage()),
                     HttpStatus.OK);
         } else {
             return new ResponseEntity<>(workdayList, HttpStatus.OK);
@@ -129,29 +130,29 @@ public class WorkDayController {
     public ResponseEntity<?> updateWorkday(RequestEntity<Workday> requestEntity) {
 
         if (workdayHelper.validateBodyRequest(requestEntity)) {
-            return new ResponseEntity<>(new ErrorRest("Formato de petición incorrecto. Debe enviar los datos de la jornada"),
+            return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
                     HttpStatus.BAD_REQUEST);
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
             if (!workdayHelper.isWorkdayCorrect(requestEntityBody)) {
-                return new ResponseEntity<>(new ErrorRest("Formato de petición incorrecto. Debe enviar los datos de la jornada"),
+                return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
                         HttpStatus.BAD_REQUEST);
             } else {
                 try {
                     Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
                     if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
-                        requestEntityBody = new Workday(workDayServiceByName);
-                        return new ResponseEntity<>(workDayService.update(requestEntityBody), HttpStatus.CREATED);
+
+                        return new ResponseEntity<>(workDayService.update(workDayServiceByName), HttpStatus.CREATED);
                     } else {
-                        return new ResponseEntity<>(new ErrorRest("La jornada con nombre " + requestEntityBody.getName() + " no se pudo actualizar"),
+                        return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_UPDATE.getMesage()),
                                 HttpStatus.CONFLICT);
                     }
                 } catch (WorkdayNotFoundException e) {
-                    return new ResponseEntity<>(new ErrorRest("La jornada con: " + requestEntityBody.getName() + " ya existe"),
+                    return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
                             HttpStatus.CONFLICT);
                 } catch (NoSuchElementException e) {
-                    return new ResponseEntity<>(new ErrorRest("Error creando la jornada"),
+                    return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
                             HttpStatus.CONFLICT);
                 }
             }

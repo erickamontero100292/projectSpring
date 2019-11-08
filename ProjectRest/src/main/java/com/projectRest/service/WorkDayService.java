@@ -39,6 +39,7 @@ public class WorkDayService {
         EntityWorkday entityWorkday = null;
         try {
             entityWorkday = repository.findByName_IgnoreCase(workday.getName());
+            entityWorkday.updateWorkday(workday);
             entityWorkday = repository.save(entityWorkday);
         } catch (Exception e) {
             throw new WorkdayNotFoundException(workday.getName()," no se logro actualizar");
