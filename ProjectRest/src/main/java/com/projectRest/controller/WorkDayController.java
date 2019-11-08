@@ -8,6 +8,7 @@ import com.projectRest.error.WorkdayNotFoundException;
 import com.projectRest.helper.WorkdayHelper;
 import com.projectRest.model.Workday;
 import com.projectRest.repository.WorkDayRepository;
+import com.projectRest.response.ResponseRest;
 import com.projectRest.service.WorkDayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,11 +73,11 @@ public class WorkDayController {
             try {
                 Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
 
-                if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
-                    return new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
-                } else {
+                if (workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
                     return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + workDayServiceByName.getName() + Message.NOT_EXIST.getMesage()),
                             HttpStatus.CONFLICT);
+                } else {
+                    return new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
                 }
             } catch (WorkdayNotFoundException e) {
                 return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
@@ -146,6 +147,47 @@ public class WorkDayController {
                         return new ResponseEntity<>(workDayService.update(workDayServiceByName), HttpStatus.CREATED);
                     } else {
                         return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_UPDATE.getMesage()),
+                                HttpStatus.CONFLICT);
+                    }
+                } catch (WorkdayNotFoundException e) {
+                    return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
+                            HttpStatus.CONFLICT);
+                } catch (NoSuchElementException e) {
+                    return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
+                            HttpStatus.CONFLICT);
+                }
+            }
+        }
+    }
+
+    @DeleteMapping("/delete/{name}")
+    public ResponseEntity<?> deleteWorkday(RequestEntity<Workday> requestEntity) {
+
+        if (workdayHelper.validateBodyRequest(requestEntity)) {
+            return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
+                    HttpStatus.BAD_REQUEST);
+
+        } else {
+            Workday requestEntityBody = requestEntity.getBody();
+            if (!workdayHelper.isWorkdayCorrect(requestEntityBody)) {
+                return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
+                        HttpStatus.BAD_REQUEST);
+            } else {
+                try {
+                    Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
+                    if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
+                        boolean isDelete= workDayService.delete(workDayServiceByName);
+                        ResponseRest responseRest= new ResponseRest();
+                        if(isDelete){
+                            responseRest.setMensaje("Jornada eliminada");
+                            return new ResponseEntity<>(responseRest, HttpStatus.OK);
+                        }else{
+                            return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
+                                    HttpStatus.CONFLICT);
+                        }
+
+                    } else {
+                        return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
                                 HttpStatus.CONFLICT);
                     }
                 } catch (WorkdayNotFoundException e) {

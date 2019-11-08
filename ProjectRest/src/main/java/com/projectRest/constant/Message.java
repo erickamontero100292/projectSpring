@@ -9,6 +9,7 @@ public enum Message {
     NOT_GET_INFORMATION_LIST("No se pudo obtener la informacion de la lista"),
     NO_EXIST_WORKDAY("No existen jornadas"),
     NOT_UPDATE(" no se pudo actualizar"),
+    NOT_DELETE(" no se pudo eliminar"),
     FORMAT_REQUEST_WRONG("Formato de petición incorrecto. Debe enviar los datos de la jornada");
 
 
