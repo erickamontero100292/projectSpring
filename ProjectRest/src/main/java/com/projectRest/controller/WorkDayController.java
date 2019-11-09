@@ -174,22 +174,7 @@ public class WorkDayController {
                         HttpStatus.BAD_REQUEST);
             } else {
                 try {
-                    Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
-                    if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
-                        boolean isDelete= workDayService.delete(workDayServiceByName);
-                        ResponseRest responseRest= new ResponseRest();
-                        if(isDelete){
-                            responseRest.setMensaje("Jornada eliminada");
-                            return new ResponseEntity<>(responseRest, HttpStatus.OK);
-                        }else{
-                            return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
-                                    HttpStatus.CONFLICT);
-                        }
-
-                    } else {
-                        return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
-                                HttpStatus.CONFLICT);
-                    }
+                    return processDeleteWorkday(requestEntityBody);
                 } catch (WorkdayNotFoundException e) {
                     return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
                             HttpStatus.CONFLICT);
@@ -198,6 +183,24 @@ public class WorkDayController {
                             HttpStatus.CONFLICT);
                 }
             }
+        }
+    }
+
+    private ResponseEntity<?> processDeleteWorkday(Workday requestEntityBody) {
+        Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
+        if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
+            boolean isDelete = workDayService.delete(workDayServiceByName);
+            if (isDelete) {
+                ResponseRest responseRest = new ResponseRest(Message.WORKDAY_DELETE.getMesage(), HttpStatus.OK);
+                return new ResponseEntity<>(responseRest, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
+                        HttpStatus.CONFLICT);
+            }
+
+        } else {
+            return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
+                    HttpStatus.CONFLICT);
         }
     }
 
