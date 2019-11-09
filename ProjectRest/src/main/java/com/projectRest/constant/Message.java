@@ -10,6 +10,7 @@ public enum Message {
     NO_EXIST_WORKDAY("No existen jornadas"),
     NOT_UPDATE(" no se pudo actualizar"),
     NOT_DELETE(" no se pudo eliminar"),
+    WORKDAY_DELETE(" Jornada eliminada"),
     FORMAT_REQUEST_WRONG("Formato de petición incorrecto. Debe enviar los datos de la jornada");
 
 
