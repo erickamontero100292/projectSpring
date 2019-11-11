@@ -3,7 +3,9 @@ package com.projectRest.controller;
 
 import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityWorkday;
-import com.projectRest.error.ErrorRest;
+import com.projectRest.error.ApiErrorResponse;
+import com.projectRest.error.BadRequestException;
+import com.projectRest.error.ErrorRestBuilder;
 import com.projectRest.error.WorkdayNotFoundException;
 import com.projectRest.helper.WorkdayHelper;
 import com.projectRest.model.Workday;
@@ -11,10 +13,13 @@ import com.projectRest.repository.WorkDayRepository;
 import com.projectRest.response.ResponseRest;
 import com.projectRest.service.WorkDayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -34,17 +39,26 @@ public class WorkDayController {
 
 
     @GetMapping("/workday/{id}")
-    public Workday getWorkdayById(@PathVariable Long id) {
+    public ResponseEntity getWorkdayById(@PathVariable Long id) {
         Workday entityWorkday = null;
         try {
             if (id > 0) {
                 entityWorkday = workDayService.findById(id);
-                return entityWorkday;
+            } else {
+                if (id < 0) {
+                    throw new BadRequestException("id", "Jornada", "no puede ser negativo");
+                } else {
+
+                    throw new BadRequestException("Jornada", id);
+                }
             }
         } catch (WorkdayNotFoundException e) {
             throw e;
+        } catch (BadRequestException e) {
+            return new ResponseEntity<>(new ErrorRestBuilder(e.getMessage()),
+                    HttpStatus.BAD_REQUEST);
         }
-        return entityWorkday;
+        return new ResponseEntity<>(entityWorkday, HttpStatus.OK);
     }
 
     @GetMapping("/workday/findname/{name}")
@@ -65,7 +79,7 @@ public class WorkDayController {
     @PostMapping("/addworkday")
     public ResponseEntity<?> addworkday(RequestEntity<Workday> requestEntity) {
         if (workdayHelper.validateBodyRequest(requestEntity)) {
-            return new ResponseEntity<>(new ErrorRest("Formato de petición incorrecto. Debe enviar los datos de la jornada"),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                     HttpStatus.BAD_REQUEST);
 
         } else {
@@ -74,16 +88,15 @@ public class WorkDayController {
                 Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
 
                 if (workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
-                    return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + workDayServiceByName.getName() + Message.NOT_EXIST.getMesage()),
+                    return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + workDayServiceByName.getName() + Message.NOT_EXIST.getMesage()),
                             HttpStatus.CONFLICT);
                 } else {
                     return new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
                 }
             } catch (WorkdayNotFoundException e) {
-                return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
-                        HttpStatus.CONFLICT);
+                return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()), HttpStatus.CONFLICT);
             } catch (NoSuchElementException e) {
-                return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
+                return new ResponseEntity<>(new ErrorRestBuilder(Message.ERROR_CREATE_WORKDAY.getMesage()),
                         HttpStatus.CONFLICT);
             }
         }
@@ -95,14 +108,14 @@ public class WorkDayController {
     public ResponseEntity<?> addworkdays(RequestEntity<List<Workday>> requestEntity) {
 
         if (requestEntity.getBody() == null) {
-            return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                     HttpStatus.BAD_REQUEST);
         }
 
         List<Workday> workday = requestEntity.getBody();
 
         if (workday == null) {
-            return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.ERROR_CREATE_WORKDAY.getMesage()),
                     HttpStatus.CONFLICT);
         } else {
             return new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
@@ -115,11 +128,11 @@ public class WorkDayController {
         List<Workday> workdayList = workDayService.findAll();
 
         if (workdayList == null) {
-            return new ResponseEntity<>(new ErrorRest(Message.NOT_GET_INFORMATION_LIST.getMesage()),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.NOT_GET_INFORMATION_LIST.getMesage()),
                     HttpStatus.CONFLICT);
         }
         if (workdayList.isEmpty()) {
-            return new ResponseEntity<>(new ErrorRest(Message.NO_EXIST_WORKDAY.getMesage()),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.NO_EXIST_WORKDAY.getMesage()),
                     HttpStatus.OK);
         } else {
             return new ResponseEntity<>(workdayList, HttpStatus.OK);
@@ -131,13 +144,13 @@ public class WorkDayController {
     public ResponseEntity<?> updateWorkday(RequestEntity<Workday> requestEntity) {
 
         if (workdayHelper.validateBodyRequest(requestEntity)) {
-            return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                     HttpStatus.BAD_REQUEST);
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
             if (!workdayHelper.isWorkdayCorrect(requestEntityBody)) {
-                return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
+                return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                         HttpStatus.BAD_REQUEST);
             } else {
                 try {
@@ -146,14 +159,14 @@ public class WorkDayController {
 
                         return new ResponseEntity<>(workDayService.update(workDayServiceByName), HttpStatus.CREATED);
                     } else {
-                        return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_UPDATE.getMesage()),
+                        return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_UPDATE.getMesage()),
                                 HttpStatus.CONFLICT);
                     }
                 } catch (WorkdayNotFoundException e) {
-                    return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
+                    return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
                             HttpStatus.CONFLICT);
                 } catch (NoSuchElementException e) {
-                    return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
+                    return new ResponseEntity<>(new ErrorRestBuilder(Message.ERROR_CREATE_WORKDAY.getMesage()),
                             HttpStatus.CONFLICT);
                 }
             }
@@ -164,22 +177,22 @@ public class WorkDayController {
     public ResponseEntity<?> deleteWorkday(RequestEntity<Workday> requestEntity) {
 
         if (workdayHelper.validateBodyRequest(requestEntity)) {
-            return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                     HttpStatus.BAD_REQUEST);
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
             if (!workdayHelper.isWorkdayCorrect(requestEntityBody)) {
-                return new ResponseEntity<>(new ErrorRest(Message.FORMAT_REQUEST_WRONG.getMesage()),
+                return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                         HttpStatus.BAD_REQUEST);
             } else {
                 try {
                     return processDeleteWorkday(requestEntityBody);
                 } catch (WorkdayNotFoundException e) {
-                    return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
+                    return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
                             HttpStatus.CONFLICT);
                 } catch (NoSuchElementException e) {
-                    return new ResponseEntity<>(new ErrorRest(Message.ERROR_CREATE_WORKDAY.getMesage()),
+                    return new ResponseEntity<>(new ErrorRestBuilder(Message.ERROR_CREATE_WORKDAY.getMesage()),
                             HttpStatus.CONFLICT);
                 }
             }
@@ -194,14 +207,27 @@ public class WorkDayController {
                 ResponseRest responseRest = new ResponseRest(Message.WORKDAY_DELETE.getMesage(), HttpStatus.OK);
                 return new ResponseEntity<>(responseRest, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
+                return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
                         HttpStatus.CONFLICT);
             }
 
         } else {
-            return new ResponseEntity<>(new ErrorRest(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
+            return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
                     HttpStatus.CONFLICT);
         }
+    }
+
+
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex, WebRequest request) {
+        ApiErrorResponse response = new ApiErrorResponse.ApiErrorResponseBuilder()
+                .withStatus(HttpStatus.BAD_REQUEST)
+                .withError_code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .withDetail(ex.getLocalizedMessage())
+                .withMessage("Formato de los parametros incorrectos").build();
+
+        return new ResponseEntity<>( response, new HttpHeaders(), response.getStatus());
     }
 
     @PostConstruct
