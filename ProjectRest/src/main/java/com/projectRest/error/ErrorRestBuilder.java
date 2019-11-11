@@ -49,7 +49,7 @@ public class ErrorRestBuilder {
         return this;
     }
 
-    public ErrorResponse build() {
+    public  ErrorResponse build() {
         ErrorResponse apiErrorResponse = new ErrorResponse();
         apiErrorResponse.setStatus(this.status);
         apiErrorResponse.setErrorCode(this.errorCode);

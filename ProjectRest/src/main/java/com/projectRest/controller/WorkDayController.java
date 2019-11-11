@@ -3,10 +3,7 @@ package com.projectRest.controller;
 
 import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityWorkday;
-import com.projectRest.error.ApiErrorResponse;
-import com.projectRest.error.BadRequestException;
-import com.projectRest.error.ErrorRestBuilder;
-import com.projectRest.error.WorkdayNotFoundException;
+import com.projectRest.error.*;
 import com.projectRest.helper.WorkdayHelper;
 import com.projectRest.model.Workday;
 import com.projectRest.repository.WorkDayRepository;
@@ -221,13 +218,12 @@ public class WorkDayController {
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
             MethodArgumentTypeMismatchException ex, WebRequest request) {
-        ApiErrorResponse response = new ApiErrorResponse.ApiErrorResponseBuilder()
-                .withStatus(HttpStatus.BAD_REQUEST)
+        ErrorRestBuilder restBuilder = new ErrorRestBuilder();
+        ErrorResponse response = restBuilder.withStatus(HttpStatus.BAD_REQUEST)
                 .withError_code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
                 .withDetail(ex.getLocalizedMessage())
                 .withMessage("Formato de los parametros incorrectos").build();
-
-        return new ResponseEntity<>( response, new HttpHeaders(), response.getStatus());
+        return new ResponseEntity<>(response, new HttpHeaders(), response.getStatus());
     }
 
     @PostConstruct
