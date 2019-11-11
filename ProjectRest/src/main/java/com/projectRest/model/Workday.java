@@ -91,9 +91,9 @@ public class Workday {
     }
 
     public boolean isWorkdayCorrect(Workday workday) {
-        if (workday.getName() == null || workday.getName().isEmpty()) {
-            return false;
+        if (workday == null || workday.getName() == null || workday.getName().isEmpty()) {
+            return true;
         }
-        return true;
+        return false;
     }
 }

@@ -154,7 +154,7 @@ public class WorkDayController {
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
-            if (!requestEntityBody.isWorkdayCorrect(requestEntityBody)) {
+            if (requestEntityBody.isWorkdayCorrect(requestEntityBody)) {
                 return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                         HttpStatus.BAD_REQUEST);
             } else {
@@ -187,7 +187,7 @@ public class WorkDayController {
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
-            if (!requestEntityBody.isWorkdayCorrect(requestEntityBody)) {
+            if (requestEntityBody.isWorkdayCorrect(requestEntityBody)) {
                 return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                         HttpStatus.BAD_REQUEST);
             } else {
