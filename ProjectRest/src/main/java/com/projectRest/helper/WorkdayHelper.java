@@ -1,8 +1,6 @@
 package com.projectRest.helper;
 
 import com.projectRest.model.Workday;
-import com.projectRest.repository.WorkDayRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 
@@ -19,12 +17,7 @@ public class WorkdayHelper {
         }
         return false;
     }
-    public boolean isWorkdayCorrect(Workday workday) {
-        if (workday.getName() == null || workday.getName().isEmpty()) {
-            return false;
-        }
-        return true;
-    }
+
 
 
 }

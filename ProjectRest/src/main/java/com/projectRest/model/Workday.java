@@ -84,5 +84,16 @@ public class Workday {
         super();
     }
 
+    public boolean emptyWorkday(){
+        if (this.id == null)
+            return true;
+        return false;
+    }
 
+    public boolean isWorkdayCorrect(Workday workday) {
+        if (workday.getName() == null || workday.getName().isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 }

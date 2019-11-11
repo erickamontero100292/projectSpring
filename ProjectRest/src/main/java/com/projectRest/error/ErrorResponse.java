@@ -6,7 +6,7 @@ public class ErrorResponse {
 
     private String message;
     private HttpStatus status;
-    private String errorCode;
+    private String code;
     private String detail;
 
     public String getMessage() {
@@ -25,12 +25,12 @@ public class ErrorResponse {
         this.status = status;
     }
 
-    public String getErrorCode() {
-        return errorCode;
+    public String getCode() {
+        return code;
     }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getDetail() {
@@ -39,6 +39,24 @@ public class ErrorResponse {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public static ErrorResponse generateError(RuntimeException ex, HttpStatus status, int codeStatus, String message) {
+
+        ErrorRestBuilder restBuilder = new ErrorRestBuilder();
+
+        return restBuilder.withStatus(status)
+                .withCode(String.valueOf(codeStatus))
+                .withDetail(ex.getLocalizedMessage())
+                .withMessage(message).build();
+    }
+
+    public static ErrorResponse generateError(HttpStatus status, int codeStatus, String message) {
+
+        ErrorRestBuilder restBuilder = new ErrorRestBuilder();
+        return restBuilder.withStatus(status)
+                .withCode(String.valueOf(codeStatus)).withDetail("")
+                .withMessage(message).build();
     }
 }
 

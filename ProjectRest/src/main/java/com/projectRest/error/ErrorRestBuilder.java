@@ -6,7 +6,7 @@ public class ErrorRestBuilder {
 
     private String message;
     private HttpStatus status;
-    private String errorCode;
+    private String code;
     private String detail;
 
 
@@ -25,17 +25,13 @@ public class ErrorRestBuilder {
         this.message = message;
     }
 
-    public static ErrorRestBuilder anApiErrorResponse() {
-        return new ErrorRestBuilder();
-    }
-
     public ErrorRestBuilder withStatus(HttpStatus status) {
         this.status = status;
         return this;
     }
 
-    public ErrorRestBuilder withError_code(String error_code) {
-        this.errorCode = error_code;
+    public ErrorRestBuilder withCode(String code) {
+        this.code = code;
         return this;
     }
 
@@ -52,7 +48,7 @@ public class ErrorRestBuilder {
     public  ErrorResponse build() {
         ErrorResponse apiErrorResponse = new ErrorResponse();
         apiErrorResponse.setStatus(this.status);
-        apiErrorResponse.setErrorCode(this.errorCode);
+        apiErrorResponse.setCode(this.code);
         apiErrorResponse.setDetail(this.detail);
         apiErrorResponse.setMessage(this.message);
         return apiErrorResponse;

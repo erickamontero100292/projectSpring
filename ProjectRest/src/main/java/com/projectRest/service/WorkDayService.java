@@ -102,7 +102,7 @@ public class WorkDayService {
             EntityWorkday entityWorkday = repository.findByName_IgnoreCase(name);
             workday = new Workday(entityWorkday);
         } catch (NullPointerException e) {
-            workday = new Workday();
+            throw new WorkdayNotFoundException(name);
         } catch (Exception e) {
             throw new WorkdayNotFoundException(name);
         }

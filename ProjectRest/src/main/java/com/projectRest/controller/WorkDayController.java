@@ -38,9 +38,11 @@ public class WorkDayController {
     @GetMapping("/workday/{id}")
     public ResponseEntity getWorkdayById(@PathVariable Long id) {
         Workday entityWorkday = null;
+        ResponseEntity responseEntity = null;
         try {
             if (id > 0) {
                 entityWorkday = workDayService.findById(id);
+                responseEntity = new ResponseEntity<>(entityWorkday, HttpStatus.OK);
             } else {
                 if (id < 0) {
                     throw new BadRequestException("id", "Jornada", "no puede ser negativo");
@@ -50,26 +52,32 @@ public class WorkDayController {
                 }
             }
         } catch (WorkdayNotFoundException e) {
-            throw e;
+            ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.value(), e.getMessage());
+            responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         } catch (BadRequestException e) {
-            return new ResponseEntity<>(new ErrorRestBuilder(e.getMessage()),
-                    HttpStatus.BAD_REQUEST);
+            ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(entityWorkday, HttpStatus.OK);
+        return responseEntity;
     }
 
     @GetMapping("/workday/findname/{name}")
-    public Workday getWorkdayByName(@PathVariable String name) {
-        Workday entityWorkday = null;
+    public ResponseEntity getWorkdayByName(@PathVariable String name) {
+        Workday workday = null;
+        ResponseEntity responseEntity = null;
         try {
             if (name != null) {
-                entityWorkday = workDayService.findByName(name);
-                return entityWorkday;
+                workday = workDayService.findByName(name);
+
+                responseEntity = new ResponseEntity<>(workday, HttpStatus.OK);
+
             }
         } catch (WorkdayNotFoundException e) {
-            throw e;
+            ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.value(), Message.WORKDAY_WITH.getMesage() + name + Message.NOT_EXIST.getMesage());
+            responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
-        return entityWorkday;
+
+        return responseEntity;
     }
 
 
@@ -146,7 +154,7 @@ public class WorkDayController {
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
-            if (!workdayHelper.isWorkdayCorrect(requestEntityBody)) {
+            if (!requestEntityBody.isWorkdayCorrect(requestEntityBody)) {
                 return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                         HttpStatus.BAD_REQUEST);
             } else {
@@ -179,7 +187,7 @@ public class WorkDayController {
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
-            if (!workdayHelper.isWorkdayCorrect(requestEntityBody)) {
+            if (!requestEntityBody.isWorkdayCorrect(requestEntityBody)) {
                 return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
                         HttpStatus.BAD_REQUEST);
             } else {
@@ -219,12 +227,10 @@ public class WorkDayController {
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
             MethodArgumentTypeMismatchException ex, WebRequest request) {
         ErrorRestBuilder restBuilder = new ErrorRestBuilder();
-        ErrorResponse response = restBuilder.withStatus(HttpStatus.BAD_REQUEST)
-                .withError_code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
-                .withDetail(ex.getLocalizedMessage())
-                .withMessage("Formato de los parametros incorrectos").build();
+        ErrorResponse response = ErrorResponse.generateError(ex,HttpStatus.BAD_REQUEST,HttpStatus.BAD_REQUEST.value(),Message.FORMAT_REQUEST_WRONG.getMesage());
         return new ResponseEntity<>(response, new HttpHeaders(), response.getStatus());
     }
+
 
     @PostConstruct
     private void init() {
