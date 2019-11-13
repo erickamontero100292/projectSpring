@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface WorkDayRepository extends JpaRepository<EntityWorkday, Long> {
 
 
-    public EntityWorkday findByName_IgnoreCase(String name);
+    EntityWorkday findByName_IgnoreCase(String name);
 
 }

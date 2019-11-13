@@ -1,9 +1,12 @@
 package com.projectRest.service;
 
+import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityWorkday;
+import com.projectRest.error.ErrorResponse;
 import com.projectRest.error.WorkdayNotFoundException;
 import com.projectRest.model.Workday;
 import com.projectRest.repository.WorkDayRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,7 +45,7 @@ public class WorkDayService {
             entityWorkday.updateWorkday(workday);
             entityWorkday = repository.save(entityWorkday);
         } catch (Exception e) {
-            throw new WorkdayNotFoundException(workday.getName()," no se logro actualizar");
+            throw new WorkdayNotFoundException(workday.getName(), " no se logro actualizar");
         }
         return new Workday(entityWorkday);
     }
@@ -53,9 +56,9 @@ public class WorkDayService {
         try {
             entityWorkday = repository.findByName_IgnoreCase(workday.getName());
             repository.delete(entityWorkday);
-            isDelete=true;
+            isDelete = true;
         } catch (Exception e) {
-            throw new WorkdayNotFoundException(workday.getName()," no se logro actualizar");
+            throw new WorkdayNotFoundException(workday.getName(), " no se logro actualizar");
         }
         return isDelete;
     }
@@ -72,6 +75,27 @@ public class WorkDayService {
         }
         return entityWorkdays;
     }
+
+    public List<ErrorResponse> validateList(List<Workday> workdayList) {
+        List<ErrorResponse> errorResponses = new ArrayList<>();
+        boolean foundData = false;
+
+        try {
+            for (Workday workday : workdayList) {
+                if (findByName(workday.getName()) != null) {
+                    ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + workday.getName() + Message.EXIST.getMesage());
+                    errorResponses.add(errorResponse);
+                }
+            }
+        }catch(WorkdayNotFoundException e){
+            //TODO  PUT LOG
+        }
+        catch (Exception e) {
+            throw new WorkdayNotFoundException("workday");
+        }
+        return errorResponses;
+    }
+
 
     public List<Workday> findAll() {
         List<EntityWorkday> entityWorkdays = repository.findAll();

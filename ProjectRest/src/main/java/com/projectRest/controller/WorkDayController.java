@@ -85,7 +85,7 @@ public class WorkDayController {
         ResponseEntity responseEntity = null;
         if (workdayHelper.validateBodyRequest(requestEntity)) {
             ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
-            responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
         } else {
             Workday requestEntityBody = requestEntity.getBody();
@@ -108,20 +108,21 @@ public class WorkDayController {
 
     @PostMapping("/addListworkday")
     public ResponseEntity<?> addworkdays(RequestEntity<List<Workday>> requestEntity) {
-
-        if (requestEntity.getBody() == null) {
-            return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
-                    HttpStatus.BAD_REQUEST);
-        }
-
+        ResponseEntity responseEntity = null;
         List<Workday> workday = requestEntity.getBody();
-
         if (workday == null) {
-            return new ResponseEntity<>(new ErrorRestBuilder(Message.ERROR_CREATE_WORKDAY.getMesage()),
-                    HttpStatus.CONFLICT);
-        } else {
-            return new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
+            ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
+            responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+        }else{
+            List<ErrorResponse> errorResponses = workDayService.validateList(workday);
+            if(errorResponses.isEmpty()) {
+                responseEntity = new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
+            }else{
+                responseEntity = new ResponseEntity<>(errorResponses, HttpStatus.CONFLICT);
+            }
         }
+        return responseEntity;
     }
 
 
