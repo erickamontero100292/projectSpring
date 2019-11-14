@@ -3,6 +3,8 @@ package com.projectRest.model;
 
 import com.projectRest.entity.EntityWorkday;
 
+import java.util.Objects;
+
 public class Workday {
     private Long id;
 
@@ -95,5 +97,18 @@ public class Workday {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Workday workday = (Workday) o;
+        return name.equals(workday.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

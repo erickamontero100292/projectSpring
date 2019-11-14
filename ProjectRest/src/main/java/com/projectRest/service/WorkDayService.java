@@ -6,9 +6,11 @@ import com.projectRest.error.ErrorResponse;
 import com.projectRest.error.WorkdayNotFoundException;
 import com.projectRest.model.Workday;
 import com.projectRest.repository.WorkDayRepository;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NonUniqueResultException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,21 +80,24 @@ public class WorkDayService {
 
     public List<ErrorResponse> validateList(List<Workday> workdayList) {
         List<ErrorResponse> errorResponses = new ArrayList<>();
-        boolean foundData = false;
 
-        try {
-            for (Workday workday : workdayList) {
+        for (Workday workday : workdayList) {
+            try {
                 if (findByName(workday.getName()) != null) {
                     ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + workday.getName() + Message.EXIST.getMesage());
                     errorResponses.add(errorResponse);
                 }
+            } catch (NonUniqueResultException | IncorrectResultSizeDataAccessException e) {
+                ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + workday.getName() + Message.EXIST.getMesage());
+                errorResponses.add(errorResponse);
+
+            } catch (WorkdayNotFoundException e) {
+                //TODO PUT LOG
+            } catch (Exception e) {
+                throw new WorkdayNotFoundException("workday");
             }
-        }catch(WorkdayNotFoundException e){
-            //TODO  PUT LOG
         }
-        catch (Exception e) {
-            throw new WorkdayNotFoundException("workday");
-        }
+
         return errorResponses;
     }
 
@@ -125,8 +130,8 @@ public class WorkDayService {
         try {
             EntityWorkday entityWorkday = repository.findByName_IgnoreCase(name);
             workday = new Workday(entityWorkday);
-        } catch (NullPointerException e) {
-            throw new WorkdayNotFoundException(name);
+        } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
+            throw e;
         } catch (Exception e) {
             throw new WorkdayNotFoundException(name);
         }

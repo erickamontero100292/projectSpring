@@ -114,12 +114,18 @@ public class WorkDayController {
             ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
             responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
 
-        }else{
-            List<ErrorResponse> errorResponses = workDayService.validateList(workday);
-            if(errorResponses.isEmpty()) {
-                responseEntity = new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
-            }else{
-                responseEntity = new ResponseEntity<>(errorResponses, HttpStatus.CONFLICT);
+        } else {
+            List<ErrorResponse> responseList = workdayHelper.validateWorkdayDuplicate(workday);
+            if (responseList.isEmpty()) {
+                List<ErrorResponse> errorResponses = workDayService.validateList(workday);
+                if (errorResponses.isEmpty()) {
+                    responseEntity = new ResponseEntity<>(workDayService.saveList(workday), HttpStatus.CREATED);
+                } else {
+                    responseEntity = new ResponseEntity<>(errorResponses, HttpStatus.CONFLICT);
+                }
+            } else {
+                responseEntity = new ResponseEntity<>(responseList, HttpStatus.CONFLICT);
+
             }
         }
         return responseEntity;
@@ -224,7 +230,6 @@ public class WorkDayController {
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
             MethodArgumentTypeMismatchException ex, WebRequest request) {
-        ErrorRestBuilder restBuilder = new ErrorRestBuilder();
         ErrorResponse response = ErrorResponse.generateError(ex, HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.FORMAT_REQUEST_WRONG.getMesage());
         return new ResponseEntity<>(response, new HttpHeaders(), response.getStatus());
     }
