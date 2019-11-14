@@ -21,4 +21,7 @@ public class BadRequestException extends RuntimeException {
     public BadRequestException( String action,String entityName, String message) {
         super(String.format("El %s de %s %s", action, entityName, message));
     }
+
+    public BadRequestException() {
+    }
 }

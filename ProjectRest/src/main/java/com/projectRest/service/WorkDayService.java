@@ -2,6 +2,7 @@ package com.projectRest.service;
 
 import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityWorkday;
+import com.projectRest.error.BadRequestException;
 import com.projectRest.error.ErrorResponse;
 import com.projectRest.error.WorkdayNotFoundException;
 import com.projectRest.model.Workday;
@@ -46,7 +47,9 @@ public class WorkDayService {
             entityWorkday = repository.findByName_IgnoreCase(workday.getName());
             entityWorkday.updateWorkday(workday);
             entityWorkday = repository.save(entityWorkday);
-        } catch (Exception e) {
+        } catch(NullPointerException exception){
+            throw  new BadRequestException();
+        }catch (Exception e) {
             throw new WorkdayNotFoundException(workday.getName(), " no se logro actualizar");
         }
         return new Workday(entityWorkday);
