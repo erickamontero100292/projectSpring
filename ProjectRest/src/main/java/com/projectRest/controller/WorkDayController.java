@@ -187,46 +187,48 @@ public class WorkDayController {
 
     @DeleteMapping("/delete/{name}")
     public ResponseEntity<?> deleteWorkday(RequestEntity<Workday> requestEntity) {
-
+        ResponseEntity responseEntity = null;
         if (workdayHelper.validateBodyRequest(requestEntity)) {
-            return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
-                    HttpStatus.BAD_REQUEST);
-
+            responseEntity = getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.FORMAT_REQUEST_WRONG.getMesage());
         } else {
             Workday requestEntityBody = requestEntity.getBody();
             if (requestEntityBody.isEmptyName(requestEntityBody)) {
-                return new ResponseEntity<>(new ErrorRestBuilder(Message.FORMAT_REQUEST_WRONG.getMesage()),
-                        HttpStatus.BAD_REQUEST);
+                responseEntity = getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.FORMAT_REQUEST_WRONG.getMesage());
+
             } else {
                 try {
-                    return processDeleteWorkday(requestEntityBody);
+                    responseEntity = processDeleteWorkday(requestEntityBody);
                 } catch (WorkdayNotFoundException e) {
-                    return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.EXIST.getMesage()),
-                            HttpStatus.CONFLICT);
+                    responseEntity = getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_EXIST.getMesage());
+
                 } catch (NoSuchElementException e) {
-                    return new ResponseEntity<>(new ErrorRestBuilder(Message.ERROR_CREATE_WORKDAY.getMesage()),
-                            HttpStatus.CONFLICT);
+                    responseEntity = getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.FORMAT_REQUEST_WRONG.getMesage());
+
                 }
             }
         }
+        return responseEntity;
     }
 
     private ResponseEntity<?> processDeleteWorkday(Workday requestEntityBody) {
         Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
+        ResponseEntity responseEntity = null;
         if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
             boolean isDelete = workDayService.delete(workDayServiceByName);
             if (isDelete) {
                 ResponseRest responseRest = new ResponseRest(Message.WORKDAY_DELETE.getMesage(), HttpStatus.OK);
-                return new ResponseEntity<>(responseRest, HttpStatus.OK);
+                responseEntity = new ResponseEntity<>(responseRest, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
-                        HttpStatus.CONFLICT);
+                responseEntity = getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage());
+
             }
 
         } else {
-            return new ResponseEntity<>(new ErrorRestBuilder(Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage()),
-                    HttpStatus.CONFLICT);
+
+            responseEntity = getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() + Message.NOT_DELETE.getMesage());
+
         }
+        return responseEntity;
     }
 
 

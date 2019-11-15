@@ -63,7 +63,7 @@ public class WorkDayService {
             repository.delete(entityWorkday);
             isDelete = true;
         } catch (Exception e) {
-            throw new WorkdayNotFoundException(workday.getName(), " no se logro actualizar");
+            throw new WorkdayNotFoundException(workday.getName(), " no se logro eliminar");
         }
         return isDelete;
     }
