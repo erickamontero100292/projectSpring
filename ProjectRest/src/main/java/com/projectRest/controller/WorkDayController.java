@@ -1,6 +1,7 @@
 package com.projectRest.controller;
 
 
+import com.projectRest.ProjectRestApplication;
 import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityWorkday;
 import com.projectRest.error.*;
@@ -9,6 +10,8 @@ import com.projectRest.model.Workday;
 import com.projectRest.repository.WorkDayRepository;
 import com.projectRest.response.ResponseRest;
 import com.projectRest.service.WorkDayService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,7 +28,7 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("/api")
 public class WorkDayController {
-
+    private static final Logger logger = LogManager.getLogger(WorkDayController.class);
     @Autowired
     WorkDayRepository workDayRepository;
     @Autowired
@@ -53,11 +56,12 @@ public class WorkDayController {
             }
         } catch (WorkdayNotFoundException e) {
             responseEntity = getErrorResponseEntity(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.value(), e.getMessage());
+            logger.debug("WorkdayNotFoundException - -");
 
         } catch (BadRequestException e) {
 
             responseEntity = getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
-
+            logger.debug("BadRequestException - -");
         }
         return responseEntity;
     }
