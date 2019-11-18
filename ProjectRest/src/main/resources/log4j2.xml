@@ -16,9 +16,14 @@
 
     </Appenders>
     <Loggers>
-        <Root level="trace">
+
+        <Logger name="com.projectRest" level="debug" additivity="false">
             <AppenderRef ref="Console" />
             <AppenderRef ref="File" />
-        </Root>
+        </Logger>
+       <!-- <Root level="debug">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+        </Root>-->
     </Loggers>
 </Configuration>
