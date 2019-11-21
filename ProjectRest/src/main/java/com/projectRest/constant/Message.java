@@ -5,6 +5,7 @@ public enum Message {
     EXIST(" ya existe"),
     NOT_EXIST(" no existe"),
     WORKDAY_WITH("La jornada con nombre: "),
+    ROL_WITH("El rol con nombre: "),
     ERROR_CREATE_WORKDAY("Error creando la jornada"),
     NOT_GET_INFORMATION_LIST("No se pudo obtener la informacion de la lista"),
     NO_EXIST_WORKDAY("No existen jornadas"),

@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface RolRepository extends JpaRepository<EntityRol, Long> {
 
     EntityRol findByName(String name);
+
+    EntityRol findByName_IgnoreCase(String name);
+
 }

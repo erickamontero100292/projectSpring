@@ -1,25 +1,16 @@
-package com.projectRest.entity;
+package com.projectRest.model;
 
+import com.projectRest.entity.EntityRol;
+import com.projectRest.entity.EntityUserApp;
 
-import com.projectRest.model.Rol;
-import lombok.Data;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Entity
-@Table(name = "roluser")
-public class EntityRol {
+public class Rol {
 
-    @Id
-    @GeneratedValue
+
     private Long id;
-
     private String name;
-
-    @OneToMany(mappedBy = "rol", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<EntityUserApp> appArrayList = new ArrayList<>();
 
     public Long getId() {
@@ -38,17 +29,10 @@ public class EntityRol {
         this.name = name;
     }
 
-    public EntityRol() {
-    }
-    public EntityRol(Rol rol) {
-        this.name = rol.getName();
+    public Rol() {
     }
 
-    public EntityRol updateRol(Rol rol) {
-        this.name = rol.getName().equals(this.name) ? this.name :rol.getName()  ;
-        return this;
-    }
-    public EntityRol(String name) {
+    public Rol(String name) {
         this.name = name;
     }
 
@@ -58,5 +42,21 @@ public class EntityRol {
 
     public void setAppArrayList(List<EntityUserApp> appArrayList) {
         this.appArrayList = appArrayList;
+    }
+
+    public Rol(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Rol(EntityRol entityRol) {
+        this.id = entityRol.getId();
+        this.name = entityRol.getName();
+    }
+
+    public boolean emptyRol(){
+        if (this.id == null)
+            return true;
+        return false;
     }
 }

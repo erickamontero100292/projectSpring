@@ -18,12 +18,6 @@ public class WorkdayHelper {
         return workDayServiceByName == null || workDayServiceByName.getName() == null;
     }
 
-    public boolean validateBodyRequest(RequestEntity<Workday> requestEntity) {
-        if (requestEntity.getBody() == null) {
-            return true;
-        }
-        return false;
-    }
 
     public List<ErrorResponse> validateWorkdayDuplicate(List<Workday> workdayList) {
         List<ErrorResponse> errorResponses = new ArrayList<>();
