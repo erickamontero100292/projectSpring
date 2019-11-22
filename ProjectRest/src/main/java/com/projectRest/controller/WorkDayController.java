@@ -151,17 +151,16 @@ public class WorkDayController {
     @GetMapping("/listworkday")
     public ResponseEntity<?> listWorkdays() {
         List<Workday> workdayList = workDayService.findAll();
+        ResponseEntity responseEntity = null;
 
-        if (workdayList == null) {
-            return new ResponseEntity<>(new ErrorRestBuilder(Message.NOT_GET_INFORMATION_LIST.getMesage()),
-                    HttpStatus.CONFLICT);
-        }
-        if (workdayList.isEmpty()) {
-            return new ResponseEntity<>(new ErrorRestBuilder(Message.NO_EXIST_WORKDAY.getMesage()),
-                    HttpStatus.OK);
+        if (workdayList == null || workdayList.isEmpty()) {
+            responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.OK, HttpStatus.OK.value(),
+                    Message.NO_EXIST_WORKDAY.getMesage());
         } else {
-            return new ResponseEntity<>(workdayList, HttpStatus.OK);
+            responseEntity = new ResponseEntity<>(workdayList, HttpStatus.OK);
         }
+
+        return responseEntity;
     }
 
 

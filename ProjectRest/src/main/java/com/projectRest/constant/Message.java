@@ -9,6 +9,7 @@ public enum Message {
     ERROR_CREATE_WORKDAY("Error creando la jornada"),
     NOT_GET_INFORMATION_LIST("No se pudo obtener la informacion de la lista"),
     NO_EXIST_WORKDAY("No existen jornadas"),
+    NO_EXIST_ROL("No existen roles"),
     NOT_UPDATE(" no se pudo actualizar"),
     NOT_DELETE(" no se pudo eliminar"),
     WORKDAY_DELETE(" Jornada eliminada"),
