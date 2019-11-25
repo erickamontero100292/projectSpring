@@ -4,8 +4,10 @@ import com.projectRest.constant.Message;
 import com.projectRest.error.BadRequestException;
 import com.projectRest.error.ErrorResponseEntity;
 import com.projectRest.error.RolNotFoundException;
+import com.projectRest.error.RoleFoundException;
 import com.projectRest.helper.Validations;
 import com.projectRest.model.Rol;
+import com.projectRest.model.RolRequest;
 import com.projectRest.service.RolService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,30 +72,33 @@ public class RolController {
         }
         return responseEntity;
     }
+
     @PutMapping("/updateRol/{name}")
-    public ResponseEntity<?> updateRol(RequestEntity<Rol> requestEntity) {
+    public ResponseEntity<?> updateRol(RequestEntity<RolRequest> requestEntity) {
         ResponseEntity responseEntity = null;
-        Rol requestEntityBody = requestEntity.getBody();
+        RolRequest requestEntityBody = requestEntity.getBody();
         if (validations.isNullBody(requestEntity)) {
-            responseEntity =ErrorResponseEntity. getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                     Message.FORMAT_REQUEST_WRONG.getMesage());
+            responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
+                    Message.FORMAT_REQUEST_WRONG.getMesage());
 
         } else {
             try {
-                Rol rolServiceByName = rolService.findByName(requestEntityBody.getName());
-                if (!rolServiceByName.isEmptyName(rolServiceByName)) {
-
+                boolean existRoleByName = rolService.existRoleByName(requestEntityBody.getName());
+                if (existRoleByName) {
                     responseEntity = new ResponseEntity<>(rolService.update(requestEntityBody), HttpStatus.OK);
                 } else {
                     responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
                             Message.ROL_WITH.getMesage() + requestEntityBody.getName() +
-                                    Message.NOT_UPDATE.getMesage());
+                                    Message.NOT_EXIST.getMesage());
 
                 }
             } catch (RolNotFoundException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.ROL_WITH.getMesage() + requestEntityBody.getName() +
-                                Message.NOT_EXIST.getMesage());
+                       e.getMessage());
+
+            } catch (RoleFoundException e) {
+                responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
+                        e.getMessage());
 
             } catch (BadRequestException e) {
 

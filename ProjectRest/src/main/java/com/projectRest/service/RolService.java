@@ -1,11 +1,15 @@
 package com.projectRest.service;
 
 
+import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityRol;
 import com.projectRest.error.BadRequestException;
 import com.projectRest.error.RolNotFoundException;
+import com.projectRest.error.RoleFoundException;
 import com.projectRest.model.Rol;
+import com.projectRest.model.RolRequest;
 import com.projectRest.repository.RolRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -38,16 +42,19 @@ public class RolService {
         return new Rol(entityRol);
     }
 
-    public Rol update(Rol rol) {
+    public Rol update(RolRequest role) {
         EntityRol entityRol = null;
         try {
-            entityRol = rolRepository.findByName_IgnoreCase(rol.getName());
-            entityRol.updateRol(rol);
+            entityRol = rolRepository.findByName_IgnoreCase(role.getName());
+            entityRol.updateRol(role);
             entityRol = rolRepository.save(entityRol);
         } catch (NullPointerException exception) {
-            throw new BadRequestException();
+            throw new RolNotFoundException( Message.ROL_WITH.getMesage() + role.getName() +
+                    Message.NOT_EXIST.getMesage());
+        } catch (DataIntegrityViolationException e) {
+            throw new RoleFoundException(role.getNameChange());
         } catch (Exception e) {
-            throw new RolNotFoundException(rol.getName(), " no se logro actualizar");
+            throw new RolNotFoundException(role.getName(), " no se logro actualizar");
         }
         return new Rol(entityRol);
     }
@@ -91,8 +98,8 @@ public class RolService {
     public Rol findByName(String name) {
         Rol rol = null;
         try {
-            EntityRol entityWorkday = rolRepository.findByName_IgnoreCase(name);
-            rol = new Rol(entityWorkday);
+            EntityRol entientityRolyWorkday = rolRepository.findByName_IgnoreCase(name);
+            rol = new Rol(entientityRolyWorkday);
         } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
             throw e;
         } catch (Exception e) {
@@ -100,6 +107,23 @@ public class RolService {
         }
 
         return rol;
+
+    }
+
+    public boolean existRoleByName(String name) {
+        boolean existRole = false;
+        try {
+            EntityRol entityRole = rolRepository.findByName_IgnoreCase(name);
+            if(entityRole != null){
+                existRole = true;
+            }
+        } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RolNotFoundException(name);
+        }
+
+        return existRole;
 
     }
 }

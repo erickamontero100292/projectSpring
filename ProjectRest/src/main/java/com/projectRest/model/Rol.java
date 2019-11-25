@@ -63,6 +63,11 @@ public class Rol {
         this.name = entityRol.getName();
     }
 
+    public Rol(RolRequest rolRequest) {
+
+        this.name = rolRequest.getName();
+    }
+
     public boolean emptyRol(){
         if (this.id == null)
             return true;

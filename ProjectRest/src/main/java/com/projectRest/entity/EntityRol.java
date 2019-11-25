@@ -2,6 +2,7 @@ package com.projectRest.entity;
 
 
 import com.projectRest.model.Rol;
+import com.projectRest.model.RolRequest;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -44,7 +45,7 @@ public class EntityRol {
         this.name = rol.getName();
     }
 
-    public EntityRol updateRol(Rol rol) {
+    public EntityRol updateRol(RolRequest rol) {
         this.name = rol.getNameChange().equals(this.name) ? this.name :rol.getNameChange()  ;
         return this;
     }
