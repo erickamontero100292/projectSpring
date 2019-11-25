@@ -45,7 +45,7 @@ public class EntityRol {
     }
 
     public EntityRol updateRol(Rol rol) {
-        this.name = rol.getName().equals(this.name) ? this.name :rol.getName()  ;
+        this.name = rol.getNameChange().equals(this.name) ? this.name :rol.getNameChange()  ;
         return this;
     }
     public EntityRol(String name) {

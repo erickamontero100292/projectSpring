@@ -92,7 +92,7 @@ public class WorkDayController {
     @PostMapping("/addworkday")
     public ResponseEntity<?> addWorkday(RequestEntity<Workday> requestEntity) {
         ResponseEntity responseEntity = null;
-        if (validations.validateBodyRequest(requestEntity)) {
+        if (validations.isNullBody(requestEntity)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
                     Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
 
@@ -168,14 +168,14 @@ public class WorkDayController {
     public ResponseEntity<?> updateWorkday(RequestEntity<Workday> requestEntity) {
         ResponseEntity responseEntity = null;
         Workday requestEntityBody = requestEntity.getBody();
-        if (validations.validateBodyRequest(requestEntity) || requestEntityBody.isEmptyName(requestEntityBody)) {
+        if (validations.isNullBody(requestEntity) || requestEntityBody.isEmptyName(requestEntityBody)) {
             responseEntity =ErrorResponseEntity. getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
                     Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
 
         } else {
             try {
                 Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
-                if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
+                if (!workDayServiceByName.isEmptyName(workDayServiceByName)) {
 
                     responseEntity = new ResponseEntity<>(workDayService.update(requestEntityBody), HttpStatus.OK);
                 } else {
@@ -207,7 +207,7 @@ public class WorkDayController {
     @DeleteMapping("/delete/{name}")
     public ResponseEntity<?> deleteWorkday(RequestEntity<Workday> requestEntity) {
         ResponseEntity responseEntity = null;
-        if (validations.validateBodyRequest(requestEntity)) {
+        if (validations.isNullBody(requestEntity)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
                     Message.FORMAT_REQUEST_WRONG.getMesage());
         } else {

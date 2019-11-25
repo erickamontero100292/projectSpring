@@ -11,6 +11,7 @@ public class Rol {
 
     private Long id;
     private String name;
+    private String nameChange;
     private List<EntityUserApp> appArrayList = new ArrayList<>();
 
     public Long getId() {
@@ -27,6 +28,14 @@ public class Rol {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNameChange() {
+        return nameChange;
+    }
+
+    public void setNameChange(String nameChange) {
+        this.nameChange = nameChange;
     }
 
     public Rol() {
@@ -57,6 +66,13 @@ public class Rol {
     public boolean emptyRol(){
         if (this.id == null)
             return true;
+        return false;
+    }
+
+    public boolean isEmptyName(Rol rol) {
+        if (rol == null || rol.getName() == null || rol.getName().isEmpty()) {
+            return true;
+        }
         return false;
     }
 }
