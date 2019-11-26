@@ -3,7 +3,6 @@ package com.projectRest.service;
 
 import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityRol;
-import com.projectRest.error.BadRequestException;
 import com.projectRest.error.RolNotFoundException;
 import com.projectRest.error.RoleFoundException;
 import com.projectRest.model.Rol;
@@ -11,6 +10,7 @@ import com.projectRest.model.RolRequest;
 import com.projectRest.repository.RolRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NonUniqueResultException;
@@ -49,7 +49,7 @@ public class RolService {
             entityRol.updateRol(role);
             entityRol = rolRepository.save(entityRol);
         } catch (NullPointerException exception) {
-            throw new RolNotFoundException( Message.ROL_WITH.getMesage() + role.getName() +
+            throw new RolNotFoundException( Message.ROLE_WITH.getMesage() + role.getName() +
                     Message.NOT_EXIST.getMesage());
         } catch (DataIntegrityViolationException e) {
             throw new RoleFoundException(role.getNameChange());
@@ -125,5 +125,23 @@ public class RolService {
 
         return existRole;
 
+    }
+
+    private boolean processDeleteRol(Rol requestEntityBody) {
+        boolean isDelete =false;
+        Rol roleByName = findByName(requestEntityBody.getName());
+        ResponseEntity responseEntity = null;
+
+        try {
+            if(roleByName != null){
+                delete(roleByName);
+                isDelete=true;
+            }
+        } catch (RolNotFoundException e) {
+           throw e;
+        }
+
+
+        return isDelete;
     }
 }
