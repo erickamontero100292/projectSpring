@@ -119,11 +119,11 @@ public class RolController {
     @DeleteMapping("/deleterole/{name}")
     public ResponseEntity<?> deleteRole(RequestEntity<Rol> requestEntity) {
         ResponseEntity responseEntity = null;
-        if (validations.isNullBody(requestEntity)) {
+        Rol requestEntityBody = requestEntity.getBody();
+        if (validations.isNullBody(requestEntity) || requestEntityBody.isEmptyName(requestEntityBody)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
                     Message.FORMAT_REQUEST_WRONG.getMesage());
         } else {
-            Rol requestEntityBody = requestEntity.getBody();
             try {
                 rolService.delete(requestEntityBody);
                 ResponseRest responseRest = new ResponseRest(Message.ROLE_DELETE.getMesage(), HttpStatus.OK);
