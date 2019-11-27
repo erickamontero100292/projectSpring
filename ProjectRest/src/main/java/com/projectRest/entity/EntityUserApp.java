@@ -18,7 +18,7 @@ public class EntityUserApp {
 
     @ManyToOne
     @JoinColumn(name="rol")
-    private EntityRol rol;
+    private EntityRole rol;
 
 
     public Long getId() {
@@ -64,15 +64,15 @@ public class EntityUserApp {
     public EntityUserApp() {
     }
 
-    public EntityRol getRol() {
+    public EntityRole getRol() {
         return rol;
     }
 
-    public void setRol(EntityRol rol) {
+    public void setRol(EntityRole rol) {
         this.rol = rol;
     }
 
-    public EntityUserApp(Date dateCreate, String user, String password, EntityRol rol) {
+    public EntityUserApp(Date dateCreate, String user, String password, EntityRole rol) {
         this.dateCreate = dateCreate;
         this.user = user;
         this.password = password;

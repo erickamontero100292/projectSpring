@@ -1,8 +1,8 @@
 package com.projectRest.entity;
 
 
-import com.projectRest.model.Rol;
-import com.projectRest.model.RolRequest;
+import com.projectRest.model.Role;
+import com.projectRest.model.RoleRequest;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "roluser")
-public class EntityRol {
+public class EntityRole {
 
     @Id
     @GeneratedValue
@@ -39,17 +39,17 @@ public class EntityRol {
         this.name = name;
     }
 
-    public EntityRol() {
+    public EntityRole() {
     }
-    public EntityRol(Rol rol) {
-        this.name = rol.getName();
+    public EntityRole(Role role) {
+        this.name = role.getName();
     }
 
-    public EntityRol updateRol(RolRequest rol) {
-        this.name = rol.getNameChange().equals(this.name) ? this.name :rol.getNameChange()  ;
+    public EntityRole updateRole(RoleRequest role) {
+        this.name = role.getNameChange().equals(this.name) ? this.name :role.getNameChange()  ;
         return this;
     }
-    public EntityRol(String name) {
+    public EntityRole(String name) {
         this.name = name;
     }
 

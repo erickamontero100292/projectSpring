@@ -1,6 +1,6 @@
 package com.projectRest.model;
 
-public class RolRequest {
+public class RoleRequest {
 
 
     private String name;
@@ -23,17 +23,17 @@ public class RolRequest {
         this.nameChange = nameChange;
     }
 
-    public RolRequest() {
+    public RoleRequest() {
     }
 
 
-    public RolRequest(String name, String nameChange) {
+    public RoleRequest(String name, String nameChange) {
         this.name = name;
         this.nameChange = nameChange;
     }
 
-    public boolean isEmptyName(Rol rol) {
-        if (rol == null || rol.getName() == null || rol.getName().isEmpty()) {
+    public boolean isEmptyName(Role role) {
+        if (role == null || role.getName() == null || role.getName().isEmpty()) {
             return true;
         }
         return false;

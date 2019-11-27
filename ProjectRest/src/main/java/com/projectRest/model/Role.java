@@ -1,12 +1,12 @@
 package com.projectRest.model;
 
-import com.projectRest.entity.EntityRol;
+import com.projectRest.entity.EntityRole;
 import com.projectRest.entity.EntityUserApp;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rol {
+public class Role {
 
 
     private Long id;
@@ -38,10 +38,10 @@ public class Rol {
         this.nameChange = nameChange;
     }
 
-    public Rol() {
+    public Role() {
     }
 
-    public Rol(String name) {
+    public Role(String name) {
         this.name = name;
     }
 
@@ -53,19 +53,19 @@ public class Rol {
         this.appArrayList = appArrayList;
     }
 
-    public Rol(Long id, String name) {
+    public Role(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Rol(EntityRol entityRol) {
-        this.id = entityRol.getId();
-        this.name = entityRol.getName();
+    public Role(EntityRole entityRole) {
+        this.id = entityRole.getId();
+        this.name = entityRole.getName();
     }
 
-    public Rol(RolRequest rolRequest) {
+    public Role(RoleRequest roleRequest) {
 
-        this.name = rolRequest.getName();
+        this.name = roleRequest.getName();
     }
 
     public boolean emptyRol(){
@@ -74,8 +74,8 @@ public class Rol {
         return false;
     }
 
-    public boolean isEmptyName(Rol rol) {
-        if (rol == null || rol.getName() == null || rol.getName().isEmpty()) {
+    public boolean isEmptyName(Role role) {
+        if (role == null || role.getName() == null || role.getName().isEmpty()) {
             return true;
         }
         return false;
