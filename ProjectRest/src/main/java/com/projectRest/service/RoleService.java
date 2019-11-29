@@ -3,14 +3,13 @@ package com.projectRest.service;
 
 import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityRole;
-import com.projectRest.error.RoleNotFoundException;
-import com.projectRest.error.RoleFoundException;
+import com.projectRest.exception.RoleFoundException;
+import com.projectRest.exception.NotFoundException;
 import com.projectRest.model.Role;
 import com.projectRest.model.RoleRequest;
 import com.projectRest.repository.RoleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NonUniqueResultException;
@@ -37,7 +36,7 @@ public class RoleService {
             entityRole = new EntityRole(role);
             entityRole = roleRepository.save(entityRole);
         } catch (Exception e) {
-            throw new RoleNotFoundException(role.getName());
+            throw new NotFoundException(Message.ROLE.getMesage(),role.getName());
         }
         return new Role(entityRole);
     }
@@ -49,12 +48,12 @@ public class RoleService {
             entityRole.updateRole(role);
             entityRole = roleRepository.save(entityRole);
         } catch (NullPointerException exception) {
-            throw new RoleNotFoundException( Message.ROLE_WITH.getMesage() + role.getName() +
+            throw new NotFoundException( Message.ROLE_WITH.getMesage() + role.getName() +
                     Message.NOT_EXIST.getMesage());
         } catch (DataIntegrityViolationException e) {
             throw new RoleFoundException(role.getNameChange());
         } catch (Exception e) {
-            throw new RoleNotFoundException(role.getName(), " no se logro actualizar");
+            throw new NotFoundException(role.getName(), " no se logro actualizar");
         }
         return new Role(entityRole);
     }
@@ -67,7 +66,7 @@ public class RoleService {
             roleRepository.delete(entityRole);
             isDelete = true;
         } catch (Exception e) {
-            throw new RoleNotFoundException(role.getName(), " no se logro eliminar");
+            throw new NotFoundException(role.getName(), " no se logro eliminar");
         }
         return isDelete;
     }
@@ -88,7 +87,7 @@ public class RoleService {
             EntityRole entityRole = roleRepository.findById(id).orElse(null);
             role = new Role(entityRole);
         } catch (Exception e) {
-            throw new RoleNotFoundException(id);
+            throw new NotFoundException(Message.ROLE.getMesage(),id);
         }
 
         return role;
@@ -103,7 +102,7 @@ public class RoleService {
         } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
             throw e;
         } catch (Exception e) {
-            throw new RoleNotFoundException(name);
+            throw new NotFoundException(name);
         }
 
         return role;
@@ -120,7 +119,7 @@ public class RoleService {
         } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
             throw e;
         } catch (Exception e) {
-            throw new RoleNotFoundException(name);
+            throw new NotFoundException(name);
         }
 
         return existRole;

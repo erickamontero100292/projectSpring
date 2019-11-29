@@ -2,46 +2,25 @@ package com.projectRest.controller;
 
 
 import com.projectRest.ProjectRestApplication;
-import com.projectRest.helper.Validations;
 import com.projectRest.model.Role;
-import com.projectRest.repository.RoleRepository;
-import com.projectRest.service.RoleService;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockBeans;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.ResponseEntity;
 
-import static org.junit.Assert.assertEquals;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(value = RoleController.class)
-@ContextConfiguration(classes= ProjectRestApplication.class)
+@SpringBootTest(classes = ProjectRestApplication.class,
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RoleControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
 
-    @MockBean
-    private RoleService roleService;
-    @MockBean
-    Validations validation;
-
-    @MockBean
-    RoleRepository roleRepository;
+    @LocalServerPort
+    private int port;
 
     //    String exampleCourseJson = "{\"name\":\"Spring\",\"description\":\"10 Steps\",\"steps\":[\"Learn Maven\",\"Import Project\",\"First Example\",\"Second Example\"]}";
     String exampleCourseJson = "{\n" +
@@ -53,8 +32,7 @@ public class RoleControllerTest {
 
     @Test
     public void createRole() throws Exception {
-        Role mockRole = new Role("ADMIN");
-
+/*
         Mockito.when(roleService.save(Mockito.any(Role.class))).thenReturn(mockRole);
 
         // Send course as body to /students/Student1/courses
@@ -69,8 +47,17 @@ public class RoleControllerTest {
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
 
-      /*  assertEquals("http://localhost/students/Student1/courses/1",
+      *//*  assertEquals("http://localhost/students/Student1/courses/1",
                 response.getHeader(HttpHeaders.LOCATION));
 */
+    }
+
+    @Test
+    public void testAddRole()
+    {
+        Role role = new Role("Lokesh");
+        ResponseEntity<String> responseEntity = this.restTemplate
+                .postForEntity("http://localhost:" + port + "/api/addrol", role, String.class);
+        Assertions.assertEquals(200, responseEntity.getStatusCodeValue());
     }
 }

@@ -3,8 +3,8 @@ package com.projectRest.controller;
 import com.projectRest.constant.Message;
 import com.projectRest.error.BadRequestException;
 import com.projectRest.error.ErrorResponseEntity;
-import com.projectRest.error.RoleNotFoundException;
-import com.projectRest.error.RoleFoundException;
+import com.projectRest.exception.RoleFoundException;
+import com.projectRest.exception.NotFoundException;
 import com.projectRest.helper.Validations;
 import com.projectRest.model.Role;
 import com.projectRest.model.RoleRequest;
@@ -49,7 +49,7 @@ public class RoleController {
                                     Message.EXIST.getMesage());
 
                 }
-            } catch (RoleNotFoundException e) {
+            } catch (NotFoundException e) {
                 responseEntity = new ResponseEntity<>(rolService.save(requestEntityBody), HttpStatus.CREATED);
             } catch (NoSuchElementException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
@@ -93,7 +93,7 @@ public class RoleController {
                                     Message.NOT_EXIST.getMesage());
 
                 }
-            } catch (RoleNotFoundException e) {
+            } catch (NotFoundException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
                         e.getMessage());
 
@@ -128,7 +128,7 @@ public class RoleController {
                 rolService.delete(requestEntityBody);
                 ResponseRest responseRest = new ResponseRest(Message.ROLE_DELETE.getMesage(), HttpStatus.OK);
                 responseEntity = new ResponseEntity<>(responseRest, HttpStatus.OK);
-            } catch (RoleNotFoundException e) {
+            } catch (NotFoundException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
                         Message.ROLE_WITH.getMesage() + requestEntityBody.getName() +
                                 Message.NOT_EXIST.getMesage());

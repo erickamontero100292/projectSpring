@@ -4,7 +4,7 @@ import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityWorkday;
 import com.projectRest.error.BadRequestException;
 import com.projectRest.error.ErrorResponse;
-import com.projectRest.error.WorkdayNotFoundException;
+import com.projectRest.exception.NotFoundException;
 import com.projectRest.model.Workday;
 import com.projectRest.repository.WorkDayRepository;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -36,7 +36,7 @@ public class WorkDayService {
             entityWorkday = new EntityWorkday(workday);
             entityWorkday = repository.save(entityWorkday);
         } catch (Exception e) {
-            throw new WorkdayNotFoundException(workday.getName());
+            throw new NotFoundException(workday.getName());
         }
         return new Workday(entityWorkday);
     }
@@ -50,7 +50,7 @@ public class WorkDayService {
         } catch(NullPointerException exception){
             throw  new BadRequestException();
         }catch (Exception e) {
-            throw new WorkdayNotFoundException(workday.getName(), " no se logro actualizar");
+            throw new NotFoundException(Message.WORKDAY.getMesage(),workday.getName(), " no se logro actualizar");
         }
         return new Workday(entityWorkday);
     }
@@ -63,7 +63,7 @@ public class WorkDayService {
             repository.delete(entityWorkday);
             isDelete = true;
         } catch (Exception e) {
-            throw new WorkdayNotFoundException(workday.getName(), " no se logro eliminar");
+            throw new NotFoundException(Message.WORKDAY.getMesage(),workday.getName(), " no se logro eliminar");
         }
         return isDelete;
     }
@@ -76,7 +76,7 @@ public class WorkDayService {
             }
             repository.saveAll(entityWorkdays);
         } catch (Exception e) {
-            throw new WorkdayNotFoundException("workday");
+            throw new NotFoundException(Message.WORKDAY.getMesage());
         }
         return entityWorkdays;
     }
@@ -94,10 +94,10 @@ public class WorkDayService {
                 ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + workday.getName() + Message.EXIST.getMesage());
                 errorResponses.add(errorResponse);
 
-            } catch (WorkdayNotFoundException e) {
+            } catch (NotFoundException e) {
                 //TODO PUT LOG
             } catch (Exception e) {
-                throw new WorkdayNotFoundException("workday");
+                throw new NotFoundException(Message.WORKDAY.getMesage());
             }
         }
 
@@ -121,7 +121,7 @@ public class WorkDayService {
             EntityWorkday entityWorkday = repository.findById(id).orElse(null);
             workday = new Workday(entityWorkday);
         } catch (Exception e) {
-            throw new WorkdayNotFoundException(id);
+            throw new NotFoundException(Message.WORKDAY.getMesage(),id);
         }
 
         return workday;
@@ -136,7 +136,7 @@ public class WorkDayService {
         } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
             throw e;
         } catch (Exception e) {
-            throw new WorkdayNotFoundException(name);
+            throw new NotFoundException(name);
         }
 
         return workday;

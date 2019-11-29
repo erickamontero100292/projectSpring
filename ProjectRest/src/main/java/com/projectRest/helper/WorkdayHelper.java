@@ -1,10 +1,10 @@
 package com.projectRest.helper;
 
+import com.projectRest.constant.Message;
 import com.projectRest.error.ErrorResponse;
-import com.projectRest.error.WorkdayNotFoundException;
+import com.projectRest.exception.NotFoundException;
 import com.projectRest.model.Workday;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -37,10 +37,10 @@ public class WorkdayHelper {
                 }
             }
 
-        } catch (WorkdayNotFoundException e) {
+        } catch (NotFoundException e) {
             //TODO  PUT LOG
         } catch (Exception e) {
-            throw new WorkdayNotFoundException("workday");
+            throw new NotFoundException(Message.WORKDAY.getMesage());
         }
         return errorResponses;
     }

@@ -1,4 +1,4 @@
-package com.projectRest.error;
+package com.projectRest.exception;
 
 
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,4 @@ public class RoleFoundException extends RuntimeException {
         super(String.format("El rol %s ya existe", name));
     }
 
-    public RoleFoundException(String message, String name) {
-        super(String.format("El rol %s %s",name, message));
-    }
 }
