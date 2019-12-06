@@ -50,7 +50,7 @@ public class WorkDayService {
         } catch(NullPointerException exception){
             throw  new BadRequestException();
         }catch (Exception e) {
-            throw new NotFoundException(Message.WORKDAY.getMesage(),workday.getName(), " no se logro actualizar");
+            throw new NotFoundException(Message.WORKDAY.getMessage(),workday.getName(), " no se logro actualizar");
         }
         return new Workday(entityWorkday);
     }
@@ -63,7 +63,7 @@ public class WorkDayService {
             repository.delete(entityWorkday);
             isDelete = true;
         } catch (Exception e) {
-            throw new NotFoundException(Message.WORKDAY.getMesage(),workday.getName(), " no se logro eliminar");
+            throw new NotFoundException(Message.WORKDAY.getMessage(),workday.getName(), Message.NOT_DELETE.getMessage());
         }
         return isDelete;
     }
@@ -76,7 +76,7 @@ public class WorkDayService {
             }
             repository.saveAll(entityWorkdays);
         } catch (Exception e) {
-            throw new NotFoundException(Message.WORKDAY.getMesage());
+            throw new NotFoundException(Message.WORKDAY.getMessage());
         }
         return entityWorkdays;
     }
@@ -87,17 +87,17 @@ public class WorkDayService {
         for (Workday workday : workdayList) {
             try {
                 if (findByName(workday.getName()) != null) {
-                    ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + workday.getName() + Message.EXIST.getMesage());
+                    ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMessage() + workday.getName() + Message.EXIST.getMessage());
                     errorResponses.add(errorResponse);
                 }
             } catch (NonUniqueResultException | IncorrectResultSizeDataAccessException e) {
-                ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMesage() + workday.getName() + Message.EXIST.getMesage());
+                ErrorResponse errorResponse = ErrorResponse.generateError(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(), Message.WORKDAY_WITH.getMessage() + workday.getName() + Message.EXIST.getMessage());
                 errorResponses.add(errorResponse);
 
             } catch (NotFoundException e) {
                 //TODO PUT LOG
             } catch (Exception e) {
-                throw new NotFoundException(Message.WORKDAY.getMesage());
+                throw new NotFoundException(Message.WORKDAY.getMessage());
             }
         }
 
@@ -121,7 +121,7 @@ public class WorkDayService {
             EntityWorkday entityWorkday = repository.findById(id).orElse(null);
             workday = new Workday(entityWorkday);
         } catch (Exception e) {
-            throw new NotFoundException(Message.WORKDAY.getMesage(),id);
+            throw new NotFoundException(Message.WORKDAY.getMessage(),id);
         }
 
         return workday;

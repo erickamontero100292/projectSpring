@@ -19,13 +19,13 @@ public enum Message {
     ROLE_DELETE("Rol eliminado");
 
 
-    private final String mesage;
+    private final String message;
 
-    Message(String mesage) {
-        this.mesage = mesage;
+    Message(String message) {
+        this.message = message;
     }
 
-    public String getMesage() {
-        return mesage;
+    public String getMessage() {
+        return message;
     }
 }

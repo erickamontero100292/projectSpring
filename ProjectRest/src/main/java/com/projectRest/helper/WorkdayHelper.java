@@ -14,11 +14,6 @@ import java.util.List;
 @Component
 public class WorkdayHelper {
 
-    public boolean isWorkdayNotNull(Workday workDayServiceByName) {
-        return workDayServiceByName == null || workDayServiceByName.getName() == null;
-    }
-
-
     public List<ErrorResponse> validateWorkdayDuplicate(List<Workday> workdayList) {
         List<ErrorResponse> errorResponses = new ArrayList<>();
         Iterator iterator = workdayList.iterator();
@@ -40,7 +35,7 @@ public class WorkdayHelper {
         } catch (NotFoundException e) {
             //TODO  PUT LOG
         } catch (Exception e) {
-            throw new NotFoundException(Message.WORKDAY.getMesage());
+            throw new NotFoundException(Message.WORKDAY.getMessage());
         }
         return errorResponses;
     }

@@ -62,7 +62,7 @@ public class WorkDayController {
 
         } catch (BadRequestException e) {
 
-            responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
+            responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), Message.WORKDAY_WITH.getMessage() + Message.FORMAT_REQUEST_WRONG.getMessage());
             logger.debug(e.getMessage());
         }
         return responseEntity;
@@ -82,7 +82,7 @@ public class WorkDayController {
         } catch (NotFoundException e) {
 
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.value(),
-                    Message.WORKDAY_WITH.getMesage() + name + Message.NOT_EXIST.getMesage());
+                    Message.WORKDAY_WITH.getMessage() + name + Message.NOT_EXIST.getMessage());
         }
 
         return responseEntity;
@@ -93,7 +93,7 @@ public class WorkDayController {
         ResponseEntity responseEntity = null;
         if (validations.isNullBody(requestEntity)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
+                    Message.WORKDAY_WITH.getMessage() + Message.FORMAT_REQUEST_WRONG.getMessage());
 
 
         } else {
@@ -103,16 +103,16 @@ public class WorkDayController {
                 if (!workDayServiceByName.emptyWorkday()) {
 
                     responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                            Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() +
-                                    Message.EXIST.getMesage());
+                            Message.WORKDAY_WITH.getMessage() + requestEntityBody.getName() +
+                                    Message.EXIST.getMessage());
 
                 }
             } catch (NotFoundException e) {
                 responseEntity = new ResponseEntity<>(workDayService.save(requestEntityBody), HttpStatus.CREATED);
             } catch (NoSuchElementException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() +
-                                Message.NOT_EXIST.getMesage());
+                        Message.WORKDAY_WITH.getMessage() + requestEntityBody.getName() +
+                                Message.NOT_EXIST.getMessage());
             }
         }
         return responseEntity;
@@ -126,7 +126,7 @@ public class WorkDayController {
         if (workday == null) {
 
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
+                    Message.WORKDAY_WITH.getMessage() + Message.FORMAT_REQUEST_WRONG.getMessage());
 
 
         } else {
@@ -154,7 +154,7 @@ public class WorkDayController {
 
         if (workdayList == null || workdayList.isEmpty()) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.OK, HttpStatus.OK.value(),
-                    Message.NO_EXIST_WORKDAY.getMesage());
+                    Message.NO_EXIST_WORKDAY.getMessage());
         } else {
             responseEntity = new ResponseEntity<>(workdayList, HttpStatus.OK);
         }
@@ -169,7 +169,7 @@ public class WorkDayController {
         Workday requestEntityBody = requestEntity.getBody();
         if (validations.isNullBody(requestEntity) || requestEntityBody.isEmptyName(requestEntityBody)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.WORKDAY_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
+                    Message.WORKDAY_WITH.getMessage() + Message.FORMAT_REQUEST_WRONG.getMessage());
 
         } else {
             try {
@@ -179,24 +179,24 @@ public class WorkDayController {
                     responseEntity = new ResponseEntity<>(workDayService.update(requestEntityBody), HttpStatus.OK);
                 } else {
                     responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                            Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() +
-                                    Message.NOT_UPDATE.getMesage());
+                            Message.WORKDAY_WITH.getMessage() + requestEntityBody.getName() +
+                                    Message.NOT_UPDATE.getMessage());
 
                 }
             } catch (NotFoundException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() +
-                                Message.NOT_EXIST.getMesage());
+                        Message.WORKDAY_WITH.getMessage() + requestEntityBody.getName() +
+                                Message.NOT_EXIST.getMessage());
 
             } catch (BadRequestException e) {
 
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                        Message.FORMAT_REQUEST_WRONG.getMesage());
+                        Message.FORMAT_REQUEST_WRONG.getMessage());
 
 
             } catch (NoSuchElementException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.NOT_UPDATE.getMesage());
+                        Message.NOT_UPDATE.getMessage());
 
             }
         }
@@ -206,54 +206,25 @@ public class WorkDayController {
     @DeleteMapping("/delete/{name}")
     public ResponseEntity<?> deleteWorkday(RequestEntity<Workday> requestEntity) {
         ResponseEntity responseEntity = null;
-        if (validations.isNullBody(requestEntity)) {
+        Workday requestEntityBody = requestEntity.getBody();
+        if (validations.isNullBody(requestEntity) || requestEntityBody.isEmptyName(requestEntityBody)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.FORMAT_REQUEST_WRONG.getMesage());
+                    Message.FORMAT_REQUEST_WRONG.getMessage());
         } else {
-            Workday requestEntityBody = requestEntity.getBody();
-            if (requestEntityBody.isEmptyName(requestEntityBody)) {
-                responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                        Message.FORMAT_REQUEST_WRONG.getMesage());
-
-            } else {
-                try {
-                    responseEntity = processDeleteWorkday(requestEntityBody);
-                } catch (NotFoundException e) {
-                    responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                            Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() +
-                                    Message.NOT_EXIST.getMesage());
-
-                } catch (NoSuchElementException e) {
-                    responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                            Message.FORMAT_REQUEST_WRONG.getMesage());
-
-                }
-            }
-        }
-        return responseEntity;
-    }
-
-    private ResponseEntity<?> processDeleteWorkday(Workday requestEntityBody) {
-        Workday workDayServiceByName = workDayService.findByName(requestEntityBody.getName());
-        ResponseEntity responseEntity = null;
-        if (!workdayHelper.isWorkdayNotNull(workDayServiceByName)) {
-            boolean isDelete = workDayService.delete(workDayServiceByName);
-            if (isDelete) {
-                ResponseRest responseRest = new ResponseRest(Message.WORKDAY_DELETE.getMesage(), HttpStatus.OK);
+            try {
+                workDayService.delete(requestEntityBody);
+                ResponseRest responseRest = new ResponseRest(Message.WORKDAY_DELETE.getMessage(), HttpStatus.OK);
                 responseEntity = new ResponseEntity<>(responseRest, HttpStatus.OK);
-            } else {
+            } catch (NotFoundException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() +
-                                Message.NOT_DELETE.getMesage());
+                        Message.WORKDAY_WITH.getMessage() + requestEntityBody.getName() +
+                                Message.NOT_EXIST.getMessage());
+
+            } catch (NoSuchElementException e) {
+                responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
+                        Message.FORMAT_REQUEST_WRONG.getMessage());
 
             }
-
-        } else {
-
-            responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                    Message.WORKDAY_WITH.getMesage() + requestEntityBody.getName() +
-                            Message.NOT_DELETE.getMesage());
-
         }
         return responseEntity;
     }
@@ -264,7 +235,7 @@ public class WorkDayController {
             MethodArgumentTypeMismatchException ex, WebRequest request) {
         ResponseEntity responseEntity = null;
         responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                Message.FORMAT_REQUEST_WRONG.getMesage());
+                Message.FORMAT_REQUEST_WRONG.getMessage());
 
         return responseEntity;
     }

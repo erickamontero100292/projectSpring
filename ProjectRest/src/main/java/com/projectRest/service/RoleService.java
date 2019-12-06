@@ -36,7 +36,7 @@ public class RoleService {
             entityRole = new EntityRole(role);
             entityRole = roleRepository.save(entityRole);
         } catch (Exception e) {
-            throw new NotFoundException(Message.ROLE.getMesage(),role.getName());
+            throw new NotFoundException(Message.ROLE.getMessage(),role.getName());
         }
         return new Role(entityRole);
     }
@@ -48,8 +48,8 @@ public class RoleService {
             entityRole.updateRole(role);
             entityRole = roleRepository.save(entityRole);
         } catch (NullPointerException exception) {
-            throw new NotFoundException( Message.ROLE_WITH.getMesage() + role.getName() +
-                    Message.NOT_EXIST.getMesage());
+            throw new NotFoundException( Message.ROLE_WITH.getMessage() + role.getName() +
+                    Message.NOT_EXIST.getMessage());
         } catch (DataIntegrityViolationException e) {
             throw new RoleFoundException(role.getNameChange());
         } catch (Exception e) {
@@ -66,7 +66,7 @@ public class RoleService {
             roleRepository.delete(entityRole);
             isDelete = true;
         } catch (Exception e) {
-            throw new NotFoundException(role.getName(), " no se logro eliminar");
+            throw new NotFoundException(role.getName(), Message.NOT_DELETE.getMessage());
         }
         return isDelete;
     }
@@ -87,7 +87,7 @@ public class RoleService {
             EntityRole entityRole = roleRepository.findById(id).orElse(null);
             role = new Role(entityRole);
         } catch (Exception e) {
-            throw new NotFoundException(Message.ROLE.getMesage(),id);
+            throw new NotFoundException(Message.ROLE.getMessage(),id);
         }
 
         return role;

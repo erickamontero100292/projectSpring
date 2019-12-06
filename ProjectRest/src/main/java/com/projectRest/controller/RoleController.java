@@ -37,7 +37,7 @@ public class RoleController {
         ResponseEntity responseEntity = null;
         if (validations.isNullBody(requestEntity)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.ROLE_WITH.getMesage() + Message.FORMAT_REQUEST_WRONG.getMesage());
+                    Message.ROLE_WITH.getMessage() + Message.FORMAT_REQUEST_WRONG.getMessage());
         } else {
             Role requestEntityBody = requestEntity.getBody();
             try {
@@ -45,16 +45,16 @@ public class RoleController {
                 if (!roleServiceByName.emptyRol()) {
 
                     responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                            Message.ROLE_WITH.getMesage() + requestEntityBody.getName() +
-                                    Message.EXIST.getMesage());
+                            Message.ROLE_WITH.getMessage() + requestEntityBody.getName() +
+                                    Message.EXIST.getMessage());
 
                 }
             } catch (NotFoundException e) {
                 responseEntity = new ResponseEntity<>(rolService.save(requestEntityBody), HttpStatus.CREATED);
             } catch (NoSuchElementException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.ROLE_WITH.getMesage() + requestEntityBody.getName() +
-                                Message.NOT_EXIST.getMesage());
+                        Message.ROLE_WITH.getMessage() + requestEntityBody.getName() +
+                                Message.NOT_EXIST.getMessage());
             }
         }
         return responseEntity;
@@ -67,7 +67,7 @@ public class RoleController {
         if (validations.isNullOrEmpty(roleList)) {
 
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.OK, HttpStatus.OK.value(),
-                    Message.NO_EXIST_ROL.getMesage());
+                    Message.NO_EXIST_ROL.getMessage());
         } else {
             responseEntity = new ResponseEntity<>(roleList, HttpStatus.OK);
         }
@@ -80,7 +80,7 @@ public class RoleController {
         RoleRequest requestEntityBody = requestEntity.getBody();
         if (validations.isNullBody(requestEntity)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.FORMAT_REQUEST_WRONG.getMesage());
+                    Message.FORMAT_REQUEST_WRONG.getMessage());
 
         } else {
             try {
@@ -89,8 +89,8 @@ public class RoleController {
                     responseEntity = new ResponseEntity<>(rolService.update(requestEntityBody), HttpStatus.OK);
                 } else {
                     responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                            Message.ROLE_WITH.getMesage() + requestEntityBody.getName() +
-                                    Message.NOT_EXIST.getMesage());
+                            Message.ROLE_WITH.getMessage() + requestEntityBody.getName() +
+                                    Message.NOT_EXIST.getMessage());
 
                 }
             } catch (NotFoundException e) {
@@ -104,12 +104,12 @@ public class RoleController {
             } catch (BadRequestException e) {
 
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                        Message.FORMAT_REQUEST_WRONG.getMesage());
+                        Message.FORMAT_REQUEST_WRONG.getMessage());
 
 
             } catch (NoSuchElementException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.NOT_UPDATE.getMesage());
+                        Message.NOT_UPDATE.getMessage());
 
             }
         }
@@ -122,20 +122,20 @@ public class RoleController {
         Role requestEntityBody = requestEntity.getBody();
         if (validations.isNullBody(requestEntity) || requestEntityBody.isEmptyName(requestEntityBody)) {
             responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.FORMAT_REQUEST_WRONG.getMesage());
+                    Message.FORMAT_REQUEST_WRONG.getMessage());
         } else {
             try {
                 rolService.delete(requestEntityBody);
-                ResponseRest responseRest = new ResponseRest(Message.ROLE_DELETE.getMesage(), HttpStatus.OK);
+                ResponseRest responseRest = new ResponseRest(Message.ROLE_DELETE.getMessage(), HttpStatus.OK);
                 responseEntity = new ResponseEntity<>(responseRest, HttpStatus.OK);
             } catch (NotFoundException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.ROLE_WITH.getMesage() + requestEntityBody.getName() +
-                                Message.NOT_EXIST.getMesage());
+                        Message.ROLE_WITH.getMessage() + requestEntityBody.getName() +
+                                Message.NOT_EXIST.getMessage());
 
             } catch (NoSuchElementException e) {
                 responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.FORMAT_REQUEST_WRONG.getMesage());
+                        Message.FORMAT_REQUEST_WRONG.getMessage());
 
             }
 
