@@ -94,6 +94,20 @@ public class RoleService {
 
     }
 
+    public EntityRole findEntityByName(String name) {
+        EntityRole entientityRolyWorkday = null;
+        try {
+             entientityRolyWorkday = roleRepository.findByName_IgnoreCase(name);
+
+        } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new NotFoundException(name);
+        }
+
+        return entientityRolyWorkday;
+
+    }
     public Role findByName(String name) {
         Role role = null;
         try {

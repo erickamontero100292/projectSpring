@@ -16,7 +16,9 @@ public enum Message {
     NOT_DELETE(" no se pudo eliminar"),
     WORKDAY_DELETE(" Jornada eliminada"),
     FORMAT_REQUEST_WRONG("Formato de petición incorrecto. Debe enviar los datos correctos"),
-    ROLE_DELETE("Rol eliminado");
+    ROLE_DELETE("Rol eliminado"),
+    USER_WITH("El usuario con nombre: "),
+    USER("Usuario ");
 
 
     private final String message;

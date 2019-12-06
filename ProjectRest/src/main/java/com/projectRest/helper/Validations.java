@@ -15,7 +15,14 @@ public class Validations<T> {
         return false;
     }
 
-    public boolean isNullOrEmpty(List<Object> list){
+    public boolean isNullOrEmptyParameter(String parameter) {
+        if (parameter == null || parameter.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNullOrEmpty(List<Object> list) {
         return list == null || list.isEmpty();
     }
 

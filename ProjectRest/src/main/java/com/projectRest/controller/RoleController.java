@@ -1,6 +1,7 @@
 package com.projectRest.controller;
 
 import com.projectRest.constant.Message;
+import com.projectRest.entity.EntityRole;
 import com.projectRest.error.BadRequestException;
 import com.projectRest.error.ErrorResponseEntity;
 import com.projectRest.exception.RoleFoundException;
@@ -18,6 +19,7 @@ import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -143,5 +145,11 @@ public class RoleController {
         return responseEntity;
     }
 
-
+    @PostConstruct
+    private void init() {
+        EntityRole admin = new EntityRole("admin");
+        EntityRole user = new EntityRole("user");
+        rolService.save(admin);
+        rolService.save(user);
+    }
 }

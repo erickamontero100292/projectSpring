@@ -1,5 +1,7 @@
 package com.projectRest.entity;
 
+import com.projectRest.model.UserApp;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -19,6 +21,14 @@ public class EntityUserApp {
     @ManyToOne
     @JoinColumn(name="rol")
     private EntityRole rol;
+
+    public EntityUserApp(UserApp userApp) {
+        this.dateCreate = userApp.getDateCreate();
+        this.password = userApp.getPassword();
+        this.user =userApp.getUser();
+        this.rol = userApp.getRole();
+
+    }
 
 
     public Long getId() {

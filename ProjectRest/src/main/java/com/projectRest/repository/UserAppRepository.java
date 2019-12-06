@@ -9,4 +9,6 @@ public interface  UserAppRepository   extends JpaRepository<EntityUserApp, Long>
 
 
     EntityUserApp findFirstByUser(String email);
+
+    EntityUserApp findByUser_IgnoreCase(String name);
 }
