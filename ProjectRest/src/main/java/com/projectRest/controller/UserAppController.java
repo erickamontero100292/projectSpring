@@ -5,7 +5,6 @@ import com.projectRest.entity.EntityRole;
 import com.projectRest.error.ErrorResponseEntity;
 import com.projectRest.exception.NotFoundException;
 import com.projectRest.helper.Validations;
-import com.projectRest.model.Role;
 import com.projectRest.model.UserApp;
 import com.projectRest.model.UserAppRequest;
 import com.projectRest.service.RoleService;
@@ -67,8 +66,6 @@ public class UserAppController {
                         Message.ROLE_WITH.getMessage() + entityBody.getRoleName() +
                                 Message.NOT_EXIST.getMessage());
             }
-
-
         }
         return responseEntity;
     }
