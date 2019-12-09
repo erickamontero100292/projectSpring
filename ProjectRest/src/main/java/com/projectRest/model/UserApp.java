@@ -21,6 +21,7 @@ public class UserApp {
         this.dateCreate = userApp.getDateCreate();
         this.user = userApp.getUser();
         this.password = userApp.getPassword();
+        this.role = userApp.getRol();
 
     }
 

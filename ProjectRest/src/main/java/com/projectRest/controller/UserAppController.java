@@ -3,6 +3,7 @@ package com.projectRest.controller;
 import com.projectRest.constant.Message;
 import com.projectRest.entity.EntityRole;
 import com.projectRest.error.ErrorResponseEntity;
+import com.projectRest.exception.FoundException;
 import com.projectRest.exception.NotFoundException;
 import com.projectRest.helper.Validations;
 import com.projectRest.model.UserApp;
@@ -39,32 +40,20 @@ public class UserAppController {
         ResponseEntity responseEntity = null;
         UserAppRequest entityBody = requestEntity.getBody();
         if (isCorrectValidations(requestEntity, entityBody)) {
-            responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(),
-                    Message.USER_WITH.getMessage() + Message.FORMAT_REQUEST_WRONG.getMessage());
+            responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.BAD_REQUEST,
+                    HttpStatus.BAD_REQUEST.value(), Message.USER_WITH.getMessage() +
+                            Message.FORMAT_REQUEST_WRONG.getMessage());
         } else {
-            EntityRole entityRole = rolService.findEntityByName(entityBody.getRoleName());
-            if (entityRole != null) {
-                UserApp requestEntityBody = new UserApp(entityBody,entityRole);
-                try {
-                    UserApp userServiceByName = userService.findByName(requestEntityBody.getUser());
-                    if (userServiceByName.emptyUser()) {
-                    } else {
-                        responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                                Message.USER_WITH.getMessage() + requestEntityBody.getUser() +
-                                        Message.EXIST.getMessage());
-                    }
-                } catch (NotFoundException e) {
-                    responseEntity = new ResponseEntity<>(userService.save(requestEntityBody), HttpStatus.CREATED);
-                } catch (NoSuchElementException e) {
-                    responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                            Message.USER_WITH.getMessage() + requestEntityBody.getUser() +
-                                    Message.NOT_EXIST.getMessage());
-                }
+            try {
+                UserApp userCreated = userService.createUser(entityBody);
+                responseEntity = new ResponseEntity<>(userCreated, HttpStatus.CREATED);
+            } catch (NotFoundException e) {
+                responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT,
+                        HttpStatus.CONFLICT.value(), e.getMessage());
 
-            } else {
-                responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT, HttpStatus.CONFLICT.value(),
-                        Message.ROLE_WITH.getMessage() + entityBody.getRoleName() +
-                                Message.NOT_EXIST.getMessage());
+            } catch (FoundException e) {
+                responseEntity = ErrorResponseEntity.getErrorResponseEntity(HttpStatus.CONFLICT,
+                        HttpStatus.CONFLICT.value(), e.getMessage());
             }
         }
         return responseEntity;
