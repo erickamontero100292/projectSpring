@@ -116,7 +116,7 @@ public class RoleService {
         } catch (IncorrectResultSizeDataAccessException | NonUniqueResultException e) {
             throw e;
         } catch (Exception e) {
-            throw new NotFoundException(name);
+             role = new Role();
         }
 
         return role;
